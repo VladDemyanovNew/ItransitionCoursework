@@ -2,10 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <AssemblyName>VDemyanov.MathWars.Service</AssemblyName>
+    <RootNamespace>VDemyanov.MathWars.Service</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Services\" />
+    <Folder Include="Implementation\" />
   </ItemGroup>
 
   <ItemGroup>

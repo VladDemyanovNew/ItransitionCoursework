@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\VDemyanov.MathWars.BL\VDemyanov.MathWars.BL.csproj" />
+    <ProjectReference Include="..\VDemyanov.MathWars.BL\VDemyanov.MathWars.Service.csproj" />
     <ProjectReference Include="..\VDemyanov.MathWars.DAL\VDemyanov.MathWars.DAL.csproj" />
   </ItemGroup>
 
