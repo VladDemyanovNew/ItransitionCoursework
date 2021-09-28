@@ -23,9 +23,9 @@ namespace VDemyanov.MathWars.DAL.Models
         public string Summary { get; set; }
         public DateTime? CreationDate { get; set; }
         public DateTime? LastEditDate { get; set; }
-        public int? Topic { get; set; }
+        public int? TopicId { get; set; }
 
-        public virtual Topic TopicNavigation { get; set; }
+        public virtual Topic Topic { get; set; }
         public virtual ICollection<Answer> Answers { get; set; }
         public virtual ICollection<Achievement> Achievements { get; set; }
         public virtual ICollection<Image> Images { get; set; }

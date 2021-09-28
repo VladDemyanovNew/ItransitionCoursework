@@ -11,8 +11,8 @@ namespace VDemyanov.MathWars.DAL.Models
     public partial class Answer : Entity
     {
         public string AnswerText { get; set; }
-        public int? MathProblem { get; set; }
+        public int? MathProblemId { get; set; }
 
-        public virtual MathProblem MathProblemNavigation { get; set; }
+        public virtual MathProblem MathProblem { get; set; }
     }
 }

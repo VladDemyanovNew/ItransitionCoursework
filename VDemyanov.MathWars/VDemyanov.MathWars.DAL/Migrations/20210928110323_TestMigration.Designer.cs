@@ -10,7 +10,7 @@ using VDemyanov.MathWars.Dal;
 namespace VDemyanov.MathWars.DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210926185703_TestMigration")]
+    [Migration("20210928110323_TestMigration")]
     partial class TestMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -228,23 +228,17 @@ namespace VDemyanov.MathWars.DAL.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("MathProblem")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("MathProblemNavigationId")
+                    b.Property<int?>("MathProblemId")
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserNavigationId")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MathProblemNavigationId");
+                    b.HasIndex("MathProblemId");
 
-                    b.HasIndex("UserNavigationId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Achievements");
                 });
@@ -259,15 +253,12 @@ namespace VDemyanov.MathWars.DAL.Migrations
                     b.Property<string>("AnswerText")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("MathProblem")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("MathProblemNavigationId")
+                    b.Property<int?>("MathProblemId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MathProblemNavigationId");
+                    b.HasIndex("MathProblemId");
 
                     b.ToTable("Answers");
                 });
@@ -285,26 +276,20 @@ namespace VDemyanov.MathWars.DAL.Migrations
                     b.Property<DateTime?>("LastEditDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("MathProblem")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("MathProblemNavigationId")
+                    b.Property<int?>("MathProblemId")
                         .HasColumnType("int");
 
                     b.Property<string>("Text")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserNavigationId")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MathProblemNavigationId");
+                    b.HasIndex("MathProblemId");
 
-                    b.HasIndex("UserNavigationId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Comments");
                 });
@@ -319,15 +304,12 @@ namespace VDemyanov.MathWars.DAL.Migrations
                     b.Property<string>("Link")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("MathProblem")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("MathProblemNavigationId")
+                    b.Property<int?>("MathProblemId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MathProblemNavigationId");
+                    b.HasIndex("MathProblemId");
 
                     b.ToTable("Images");
                 });
@@ -351,15 +333,12 @@ namespace VDemyanov.MathWars.DAL.Migrations
                     b.Property<string>("Summary")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("Topic")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("TopicNavigationId")
+                    b.Property<int?>("TopicId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TopicNavigationId");
+                    b.HasIndex("TopicId");
 
                     b.ToTable("MathProblems");
                 });
@@ -371,23 +350,17 @@ namespace VDemyanov.MathWars.DAL.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("MathProblem")
+                    b.Property<int?>("MathProblemId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("MathProblemNavigationId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("Tag")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("TagNavigationId")
+                    b.Property<int?>("TagId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MathProblemNavigationId");
+                    b.HasIndex("MathProblemId");
 
-                    b.HasIndex("TagNavigationId");
+                    b.HasIndex("TagId");
 
                     b.ToTable("MathProblemTags");
                 });
@@ -475,74 +448,74 @@ namespace VDemyanov.MathWars.DAL.Migrations
 
             modelBuilder.Entity("VDemyanov.MathWars.DAL.Models.Achievement", b =>
                 {
-                    b.HasOne("VDemyanov.MathWars.DAL.Models.MathProblem", "MathProblemNavigation")
+                    b.HasOne("VDemyanov.MathWars.DAL.Models.MathProblem", "MathProblem")
                         .WithMany("Achievements")
-                        .HasForeignKey("MathProblemNavigationId");
+                        .HasForeignKey("MathProblemId");
 
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "UserNavigation")
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
                         .WithMany()
-                        .HasForeignKey("UserNavigationId");
+                        .HasForeignKey("UserId");
 
-                    b.Navigation("MathProblemNavigation");
+                    b.Navigation("MathProblem");
 
-                    b.Navigation("UserNavigation");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("VDemyanov.MathWars.DAL.Models.Answer", b =>
                 {
-                    b.HasOne("VDemyanov.MathWars.DAL.Models.MathProblem", "MathProblemNavigation")
+                    b.HasOne("VDemyanov.MathWars.DAL.Models.MathProblem", "MathProblem")
                         .WithMany("Answers")
-                        .HasForeignKey("MathProblemNavigationId");
+                        .HasForeignKey("MathProblemId");
 
-                    b.Navigation("MathProblemNavigation");
+                    b.Navigation("MathProblem");
                 });
 
             modelBuilder.Entity("VDemyanov.MathWars.DAL.Models.Comment", b =>
                 {
-                    b.HasOne("VDemyanov.MathWars.DAL.Models.MathProblem", "MathProblemNavigation")
+                    b.HasOne("VDemyanov.MathWars.DAL.Models.MathProblem", "MathProblem")
                         .WithMany("Comments")
-                        .HasForeignKey("MathProblemNavigationId");
+                        .HasForeignKey("MathProblemId");
 
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "UserNavigation")
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
                         .WithMany()
-                        .HasForeignKey("UserNavigationId");
+                        .HasForeignKey("UserId");
 
-                    b.Navigation("MathProblemNavigation");
+                    b.Navigation("MathProblem");
 
-                    b.Navigation("UserNavigation");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("VDemyanov.MathWars.DAL.Models.Image", b =>
                 {
-                    b.HasOne("VDemyanov.MathWars.DAL.Models.MathProblem", "MathProblemNavigation")
+                    b.HasOne("VDemyanov.MathWars.DAL.Models.MathProblem", "MathProblem")
                         .WithMany("Images")
-                        .HasForeignKey("MathProblemNavigationId");
+                        .HasForeignKey("MathProblemId");
 
-                    b.Navigation("MathProblemNavigation");
+                    b.Navigation("MathProblem");
                 });
 
             modelBuilder.Entity("VDemyanov.MathWars.DAL.Models.MathProblem", b =>
                 {
-                    b.HasOne("VDemyanov.MathWars.DAL.Models.Topic", "TopicNavigation")
+                    b.HasOne("VDemyanov.MathWars.DAL.Models.Topic", "Topic")
                         .WithMany("MathProblems")
-                        .HasForeignKey("TopicNavigationId");
+                        .HasForeignKey("TopicId");
 
-                    b.Navigation("TopicNavigation");
+                    b.Navigation("Topic");
                 });
 
             modelBuilder.Entity("VDemyanov.MathWars.DAL.Models.MathProblemTag", b =>
                 {
-                    b.HasOne("VDemyanov.MathWars.DAL.Models.MathProblem", "MathProblemNavigation")
+                    b.HasOne("VDemyanov.MathWars.DAL.Models.MathProblem", "MathProblem")
                         .WithMany("MathProblemTags")
-                        .HasForeignKey("MathProblemNavigationId");
+                        .HasForeignKey("MathProblemId");
 
-                    b.HasOne("VDemyanov.MathWars.DAL.Models.Tag", "TagNavigation")
+                    b.HasOne("VDemyanov.MathWars.DAL.Models.Tag", "Tag")
                         .WithMany("MathProblemTags")
-                        .HasForeignKey("TagNavigationId");
+                        .HasForeignKey("TagId");
 
-                    b.Navigation("MathProblemNavigation");
+                    b.Navigation("MathProblem");
 
-                    b.Navigation("TagNavigation");
+                    b.Navigation("Tag");
                 });
 
             modelBuilder.Entity("VDemyanov.MathWars.DAL.Models.MathProblem", b =>
