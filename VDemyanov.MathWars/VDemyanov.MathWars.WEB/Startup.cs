@@ -12,6 +12,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using VDemyanov.MathWars.Dal;
+using VDemyanov.MathWars.DAL.Interfaces;
+using VDemyanov.MathWars.DAL.UnitOfWork;
 
 namespace VDemyanov.MathWars.WEB
 {
@@ -42,6 +44,8 @@ namespace VDemyanov.MathWars.WEB
                 facebookOptions.AppId = Configuration["Authentication:Facebook:AppId"];
                 facebookOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
             });
+
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

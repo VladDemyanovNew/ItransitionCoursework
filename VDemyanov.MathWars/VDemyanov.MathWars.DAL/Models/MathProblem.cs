@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -24,8 +25,10 @@ namespace VDemyanov.MathWars.DAL.Models
         public DateTime? CreationDate { get; set; }
         public DateTime? LastEditDate { get; set; }
         public int? TopicId { get; set; }
+        public string UserId { get; set; }
 
         public virtual Topic Topic { get; set; }
+        public virtual IdentityUser User { get; set; }
         public virtual ICollection<Answer> Answers { get; set; }
         public virtual ICollection<Achievement> Achievements { get; set; }
         public virtual ICollection<Image> Images { get; set; }
