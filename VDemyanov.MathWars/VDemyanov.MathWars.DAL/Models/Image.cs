@@ -11,7 +11,7 @@ namespace VDemyanov.MathWars.DAL.Models
     public partial class Image : Entity
     {
         public string Link { get; set; }
-        public int? MathProblemId { get; set; }
+        public int MathProblemId { get; set; }
 
         public virtual MathProblem MathProblem { get; set; }
     }

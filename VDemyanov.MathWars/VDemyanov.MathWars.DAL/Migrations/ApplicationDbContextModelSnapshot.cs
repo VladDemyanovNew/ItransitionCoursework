@@ -226,7 +226,7 @@ namespace VDemyanov.MathWars.DAL.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("MathProblemId")
+                    b.Property<int>("MathProblemId")
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")
@@ -251,7 +251,7 @@ namespace VDemyanov.MathWars.DAL.Migrations
                     b.Property<string>("AnswerText")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("MathProblemId")
+                    b.Property<int>("MathProblemId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -274,7 +274,7 @@ namespace VDemyanov.MathWars.DAL.Migrations
                     b.Property<DateTime?>("LastEditDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("MathProblemId")
+                    b.Property<int>("MathProblemId")
                         .HasColumnType("int");
 
                     b.Property<string>("Text")
@@ -302,7 +302,7 @@ namespace VDemyanov.MathWars.DAL.Migrations
                     b.Property<string>("Link")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("MathProblemId")
+                    b.Property<int>("MathProblemId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -331,7 +331,7 @@ namespace VDemyanov.MathWars.DAL.Migrations
                     b.Property<string>("Summary")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("TopicId")
+                    b.Property<int>("TopicId")
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")
@@ -353,10 +353,10 @@ namespace VDemyanov.MathWars.DAL.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("MathProblemId")
+                    b.Property<int>("MathProblemId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("TagId")
+                    b.Property<int>("TagId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -453,7 +453,9 @@ namespace VDemyanov.MathWars.DAL.Migrations
                 {
                     b.HasOne("VDemyanov.MathWars.DAL.Models.MathProblem", "MathProblem")
                         .WithMany("Achievements")
-                        .HasForeignKey("MathProblemId");
+                        .HasForeignKey("MathProblemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
                         .WithMany()
@@ -468,7 +470,9 @@ namespace VDemyanov.MathWars.DAL.Migrations
                 {
                     b.HasOne("VDemyanov.MathWars.DAL.Models.MathProblem", "MathProblem")
                         .WithMany("Answers")
-                        .HasForeignKey("MathProblemId");
+                        .HasForeignKey("MathProblemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("MathProblem");
                 });
@@ -477,7 +481,9 @@ namespace VDemyanov.MathWars.DAL.Migrations
                 {
                     b.HasOne("VDemyanov.MathWars.DAL.Models.MathProblem", "MathProblem")
                         .WithMany("Comments")
-                        .HasForeignKey("MathProblemId");
+                        .HasForeignKey("MathProblemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
                         .WithMany()
@@ -492,7 +498,9 @@ namespace VDemyanov.MathWars.DAL.Migrations
                 {
                     b.HasOne("VDemyanov.MathWars.DAL.Models.MathProblem", "MathProblem")
                         .WithMany("Images")
-                        .HasForeignKey("MathProblemId");
+                        .HasForeignKey("MathProblemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("MathProblem");
                 });
@@ -501,7 +509,9 @@ namespace VDemyanov.MathWars.DAL.Migrations
                 {
                     b.HasOne("VDemyanov.MathWars.DAL.Models.Topic", "Topic")
                         .WithMany("MathProblems")
-                        .HasForeignKey("TopicId");
+                        .HasForeignKey("TopicId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
                         .WithMany()
@@ -516,11 +526,15 @@ namespace VDemyanov.MathWars.DAL.Migrations
                 {
                     b.HasOne("VDemyanov.MathWars.DAL.Models.MathProblem", "MathProblem")
                         .WithMany("MathProblemTags")
-                        .HasForeignKey("MathProblemId");
+                        .HasForeignKey("MathProblemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("VDemyanov.MathWars.DAL.Models.Tag", "Tag")
                         .WithMany("MathProblemTags")
-                        .HasForeignKey("TagId");
+                        .HasForeignKey("TagId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("MathProblem");
 

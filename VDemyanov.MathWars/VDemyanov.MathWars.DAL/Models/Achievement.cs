@@ -11,7 +11,7 @@ namespace VDemyanov.MathWars.DAL.Models
 {
     public partial class Achievement : Entity
     {
-        public int? MathProblemId { get; set; }
+        public int MathProblemId { get; set; }
         public string UserId { get; set; }
 
         public virtual MathProblem MathProblem { get; set; }

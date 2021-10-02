@@ -11,7 +11,7 @@ namespace VDemyanov.MathWars.DAL.Models
 {
     public partial class Comment : Entity
     {
-        public int? MathProblemId { get; set; }
+        public int MathProblemId { get; set; }
         public string UserId { get; set; }
         public DateTime? CreationDate { get; set; }
         public DateTime? LastEditDate { get; set; }

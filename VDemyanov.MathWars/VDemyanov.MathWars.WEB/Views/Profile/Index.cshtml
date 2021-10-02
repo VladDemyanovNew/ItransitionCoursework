@@ -8,7 +8,7 @@
         <div class="col-sm-6">
             <div class="card">
                 <div class="card-header">
-                    My statistic
+                    My stats
                 </div>
                 <div class="card-body">
                     <canvas class="my-4 h-25" id="doughnut"></canvas>
@@ -16,11 +16,35 @@
             </div>
         </div>
     </div>
-    <div class="row  d-flex justify-content-between">
-        <form>
-            <button type="submit" class="btn btn-primary">Create</button>
-            <button type="submit" class="btn btn-danger">Delete</button>
-        </form>
+    <div class="row d-flex justify-content-between">
+        <div>
+            <a class="btn btn-primary">Create</a>
+            <button type="button" class="btn btn-danger" id="deleteBtn" data-toggle="modal" data-target="#deleteModal" disabled>
+                Delete
+            </button>
+
+            <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Are you sure you want to delete the selected math problems?</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                            <form method="post" id="deleteform">
+                                <button type="submit" asp-controller="MathProblem" asp-action="Delete" class="btn btn-primary">Yes</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
         <form>
             <div class="form-inline form-group">
                 <label class="control-label mr-1">Sorting 1: </label>
@@ -31,6 +55,7 @@
             </div>
         </form>
     </div>
+
     <div class="row">
         <table class="table table-responsive table-striped table-hover w-100 d-block d-md-table">
             <thead>
@@ -52,7 +77,7 @@
                 @foreach (var mp in Model.MathProblems)
                 {
                     <tr>
-                        <td><input type="checkbox" id="@mp.Id" value="@mp.Id" name="selectedMp"></td>
+                        <td><input type="checkbox" onclick="DisableDelBTN()" id="@mp.Id" value="@mp.Id" form="deleteform" name="values"></td>
                         <td>@mp.Id</td>
                         <td>@mp.Name</td>
                         <td class="text-right">
@@ -64,9 +89,24 @@
             </tbody>
         </table>
     </div>
-    
+
 </div>
 
 <script>
     createUserStatChart(null);
+
+    function SelectAll() {
+        Array.from(document.querySelectorAll("input[type='checkbox']"))
+            .forEach(elem => elem.checked = document.getElementById('maincheckbox').checked);
+        DisableDelBTN();
+    }
+
+    function DisableDelBTN() {
+        let checkedCount = Array.from(document.querySelectorAll("input[type='checkbox']"))
+            .filter(item => item.checked && item.id != "maincheckbox").length;
+        if (checkedCount != 0)
+            document.getElementById('deleteBtn').disabled = false;
+        else
+            document.getElementById('deleteBtn').disabled = true;
+    }
 </script>

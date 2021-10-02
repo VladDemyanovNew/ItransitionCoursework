@@ -24,7 +24,7 @@ namespace VDemyanov.MathWars.DAL.Models
         public string Summary { get; set; }
         public DateTime? CreationDate { get; set; }
         public DateTime? LastEditDate { get; set; }
-        public int? TopicId { get; set; }
+        public int TopicId { get; set; }
         public string UserId { get; set; }
 
         public virtual Topic Topic { get; set; }

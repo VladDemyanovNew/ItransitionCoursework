@@ -43,17 +43,24 @@ namespace VDemyanov.MathWars.DAL.Migrations
                     Summary = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     LastEditDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    TopicId = table.Column<int>(type: "int", nullable: true)
+                    TopicId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_MathProblems", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_MathProblems_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
                         name: "FK_MathProblems_Topics_TopicId",
                         column: x => x.TopicId,
                         principalTable: "Topics",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -62,7 +69,7 @@ namespace VDemyanov.MathWars.DAL.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    MathProblemId = table.Column<int>(type: "int", nullable: true),
+                    MathProblemId = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
@@ -79,7 +86,7 @@ namespace VDemyanov.MathWars.DAL.Migrations
                         column: x => x.MathProblemId,
                         principalTable: "MathProblems",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -89,7 +96,7 @@ namespace VDemyanov.MathWars.DAL.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     AnswerText = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    MathProblemId = table.Column<int>(type: "int", nullable: true)
+                    MathProblemId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -99,7 +106,7 @@ namespace VDemyanov.MathWars.DAL.Migrations
                         column: x => x.MathProblemId,
                         principalTable: "MathProblems",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -108,7 +115,7 @@ namespace VDemyanov.MathWars.DAL.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    MathProblemId = table.Column<int>(type: "int", nullable: true),
+                    MathProblemId = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     LastEditDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -128,7 +135,7 @@ namespace VDemyanov.MathWars.DAL.Migrations
                         column: x => x.MathProblemId,
                         principalTable: "MathProblems",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -138,7 +145,7 @@ namespace VDemyanov.MathWars.DAL.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Link = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    MathProblemId = table.Column<int>(type: "int", nullable: true)
+                    MathProblemId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -148,7 +155,7 @@ namespace VDemyanov.MathWars.DAL.Migrations
                         column: x => x.MathProblemId,
                         principalTable: "MathProblems",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -157,8 +164,8 @@ namespace VDemyanov.MathWars.DAL.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    TagId = table.Column<int>(type: "int", nullable: true),
-                    MathProblemId = table.Column<int>(type: "int", nullable: true)
+                    TagId = table.Column<int>(type: "int", nullable: false),
+                    MathProblemId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -168,13 +175,13 @@ namespace VDemyanov.MathWars.DAL.Migrations
                         column: x => x.MathProblemId,
                         principalTable: "MathProblems",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_MathProblemTags_Tags_TagId",
                         column: x => x.TagId,
                         principalTable: "Tags",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -211,6 +218,11 @@ namespace VDemyanov.MathWars.DAL.Migrations
                 name: "IX_MathProblems_TopicId",
                 table: "MathProblems",
                 column: "TopicId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MathProblems_UserId",
+                table: "MathProblems",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_MathProblemTags_MathProblemId",

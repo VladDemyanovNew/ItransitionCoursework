@@ -10,8 +10,8 @@ namespace VDemyanov.MathWars.DAL.Models
 {
     public partial class MathProblemTag : Entity
     {
-        public int? TagId { get; set; }
-        public int? MathProblemId { get; set; }
+        public int TagId { get; set; }
+        public int MathProblemId { get; set; }
 
         public virtual MathProblem MathProblem { get; set; }
         public virtual Tag Tag { get; set; }

@@ -30,7 +30,6 @@ namespace VDemyanov.MathWars.WEB.Controllers
         [Authorize]
         public ActionResult Index()
         {
-            //List<MathProblem> mathProblems = _unitOfWork.Repository<MathProblem>().GetAll().ToList();
             string currentUserId = _userManager.GetUserId(HttpContext.User);
             List<MathProblem> mathProblems = _unitOfWork.Repository<MathProblem>()
                                             .GetQuery((mp) => mp.UserId == currentUserId)

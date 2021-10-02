@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Implementation\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\VDemyanov.MathWars.DAL\VDemyanov.MathWars.DAL.csproj" />
   </ItemGroup>
 

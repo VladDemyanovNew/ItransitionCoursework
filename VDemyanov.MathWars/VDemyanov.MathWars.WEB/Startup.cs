@@ -14,6 +14,8 @@ using System.Threading.Tasks;
 using VDemyanov.MathWars.Dal;
 using VDemyanov.MathWars.DAL.Interfaces;
 using VDemyanov.MathWars.DAL.UnitOfWork;
+using VDemyanov.MathWars.Service.Implementation;
+using VDemyanov.MathWars.Service.Interfaces;
 
 namespace VDemyanov.MathWars.WEB
 {
@@ -46,6 +48,7 @@ namespace VDemyanov.MathWars.WEB
             });
 
             services.AddTransient<IUnitOfWork, UnitOfWork>();
+            services.AddTransient<IMathProblemService, MathProblemService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
