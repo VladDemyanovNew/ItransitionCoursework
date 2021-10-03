@@ -28,11 +28,10 @@ namespace VDemyanov.MathWars.WEB.Controllers
         }
 
         [Authorize]
-        public ActionResult Index()
+        public ActionResult Index(string userId)
         {
-            string currentUserId = _userManager.GetUserId(HttpContext.User);
             List<MathProblem> mathProblems = _unitOfWork.Repository<MathProblem>()
-                                            .GetQuery((mp) => mp.UserId == currentUserId)
+                                            .GetQuery((mp) => mp.UserId == userId)
                                             .ToList();
 
             ProfileViewModel viewModel = new ProfileViewModel

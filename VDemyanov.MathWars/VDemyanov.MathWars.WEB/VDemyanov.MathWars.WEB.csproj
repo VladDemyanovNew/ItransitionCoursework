@@ -6,6 +6,22 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\lib\dropzone\**" />
+    <Compile Remove="wwwroot\lib\mdbootstrap\**" />
+    <Compile Remove="wwwroot\lib\tagator\**" />
+    <Content Remove="wwwroot\lib\dropzone\**" />
+    <Content Remove="wwwroot\lib\mdbootstrap\**" />
+    <Content Remove="wwwroot\lib\tagator\**" />
+    <EmbeddedResource Remove="wwwroot\lib\dropzone\**" />
+    <EmbeddedResource Remove="wwwroot\lib\mdbootstrap\**" />
+    <EmbeddedResource Remove="wwwroot\lib\tagator\**" />
+    <None Remove="wwwroot\lib\dropzone\**" />
+    <None Remove="wwwroot\lib\mdbootstrap\**" />
+    <None Remove="wwwroot\lib\tagator\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Markdig" Version="0.26.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="5.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="5.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.10" />

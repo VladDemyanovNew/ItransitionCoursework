@@ -1,4 +1,6 @@
-﻿@model ProfileViewModel
+﻿@using Microsoft.AspNetCore.Identity
+@model ProfileViewModel
+@inject UserManager<IdentityUser> UserManager
 
 <link rel="stylesheet" href="~/css/profile.css" />
 <script src="~/js/profile.js"></script>
@@ -18,7 +20,7 @@
     </div>
     <div class="row d-flex justify-content-between">
         <div>
-            <a class="btn btn-primary">Create</a>
+            <a asp-controller="MathProblem" asp-action="Create" asp-route-userId="@UserManager.GetUserId(User)" class="btn btn-primary">Create</a>
             <button type="button" class="btn btn-danger" id="deleteBtn" data-toggle="modal" data-target="#deleteModal" disabled>
                 Delete
             </button>
