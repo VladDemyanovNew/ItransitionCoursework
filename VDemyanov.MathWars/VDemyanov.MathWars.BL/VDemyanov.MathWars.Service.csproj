@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Dropbox.Api" Version="6.17.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\VDemyanov.MathWars.DAL\VDemyanov.MathWars.DAL.csproj" />
   </ItemGroup>
 

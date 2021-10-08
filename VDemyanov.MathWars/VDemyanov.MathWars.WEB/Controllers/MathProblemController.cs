@@ -1,5 +1,7 @@
 ﻿using Markdig;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,19 +10,27 @@ using VDemyanov.MathWars.Dal;
 using VDemyanov.MathWars.DAL.Interfaces;
 using VDemyanov.MathWars.DAL.Models;
 using VDemyanov.MathWars.Service.Interfaces;
+using VDemyanov.MathWars.Service.Utils;
 using VDemyanov.MathWars.WEB.Models;
 
 namespace VDemyanov.MathWars.WEB.Controllers
 {
     public class MathProblemController : Controller
     {
-        ApplicationDbContext _applicationDbContext;
         IMathProblemService _mathProblemService;
+        IDropboxService _dropboxService;
+        ApplicationDbContext _applicationDbContext;
+        public IConfiguration Configuration { get; }
 
-        public MathProblemController(ApplicationDbContext applicationDbContext, IMathProblemService mathProblemService)
+        public MathProblemController(IMathProblemService mathProblemService,
+                                    IDropboxService dropboxService,
+                                    ApplicationDbContext applicationDbContext,
+                                    IConfiguration configuration)
         {
-            _applicationDbContext = applicationDbContext;
             _mathProblemService = mathProblemService;
+            Configuration = configuration;
+            _dropboxService = dropboxService;
+            _applicationDbContext = applicationDbContext;
         }
 
         [HttpPost]
@@ -44,15 +54,19 @@ namespace VDemyanov.MathWars.WEB.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(CreateViewModel model)
+        public async Task<IActionResult> Create(CreateViewModel model)
         {
             var result = Markdown.ToHtml(model.Summary);
-            foreach (var imageFile in Request.Form.Files)
+            foreach (IFormFile imageFile in Request.Form.Files)
             {
 
+                string url = await _dropboxService.Upload("/public", imageFile.FileName, model.UserId, await imageFile.GetBytes());
+                Image image = new Image() { Link = url, MathProblemId = 2 };
+                _applicationDbContext.Images.Add(image);
+                _applicationDbContext.SaveChanges();
             }
 
-            return Json(new { status = true, Message = "Account created." });
+            return Json(new { status = true, Message = "MathProblem is created" });
         }
     }
 }

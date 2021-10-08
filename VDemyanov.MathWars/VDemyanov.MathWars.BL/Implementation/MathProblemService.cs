@@ -23,5 +23,10 @@ namespace VDemyanov.MathWars.Service.Implementation
             _unitOfWork.Repository<MathProblem>().Delete(id);
             _unitOfWork.Save();
         }
+
+        public void Create(MathProblem mathProblem)
+        {
+            
+        }
     }
 }

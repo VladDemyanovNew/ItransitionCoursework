@@ -1,3 +1,7 @@
-﻿.stat-section {
-    background-color: lightgray;
+﻿.box-shadow-table {
+    box-shadow: -7px 5px 58px 11px rgba(34, 60, 80, 0.2);
+}
+
+.box-shadow-card {
+    //box-shadow: -7px 5px 58px 11px rgba(34, 60, 80, 0.2);
 }
