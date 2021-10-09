@@ -9,25 +9,23 @@ using VDemyanov.MathWars.Service.Interfaces;
 
 namespace VDemyanov.MathWars.Service.Implementation
 {
-    public class MathProblemService : IMathProblemService
+    public class TopicService : ITopicService
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public MathProblemService(IUnitOfWork unitOfWork)
+        public TopicService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
 
-        public void DeleteFromDb(int id)
+        public Topic GetTopicByName(string name)
         {
-            _unitOfWork.Repository<MathProblem>().Delete(id);
-            _unitOfWork.Save();
+            return _unitOfWork.Repository<Topic>().GetFirstOrDefault(topic => topic.Name == name);
         }
 
-        public void Create(MathProblem mathProblem)
+        public List<string> GetTopicNames()
         {
-            _unitOfWork.Repository<MathProblem>().Insert(mathProblem);
-            _unitOfWork.Save();
+            return _unitOfWork.Repository<Topic>().GetAll().Select(topic => topic.Name).Distinct().ToList();
         }
     }
 }

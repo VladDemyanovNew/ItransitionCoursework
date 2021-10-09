@@ -9,24 +9,17 @@ using VDemyanov.MathWars.Service.Interfaces;
 
 namespace VDemyanov.MathWars.Service.Implementation
 {
-    public class MathProblemService : IMathProblemService
+    public class ImageService : IImageService
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public MathProblemService(IUnitOfWork unitOfWork)
+        public ImageService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
-
-        public void DeleteFromDb(int id)
+        public void Create(Image image)
         {
-            _unitOfWork.Repository<MathProblem>().Delete(id);
-            _unitOfWork.Save();
-        }
-
-        public void Create(MathProblem mathProblem)
-        {
-            _unitOfWork.Repository<MathProblem>().Insert(mathProblem);
+            _unitOfWork.Repository<Image>().Insert(image);
             _unitOfWork.Save();
         }
     }
