@@ -16,5 +16,6 @@ namespace VDemyanov.MathWars.Service.Interfaces
         void CreateTagsFromNames(List<string> tagNames);
         List<Tag> GetTagsByNames(List<string> tagNames);
         List<string> GetNamesFromStr(string tagsStr);
+        List<string> GetTagsByMathProblemId(int id);
     }
 }

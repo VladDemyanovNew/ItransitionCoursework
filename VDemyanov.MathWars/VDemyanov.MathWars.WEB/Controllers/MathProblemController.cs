@@ -89,5 +89,27 @@ namespace VDemyanov.MathWars.WEB.Controllers
 
             return Json(new { status = true, Message = "MathProblem is created" });
         }
+
+        [HttpGet]
+        public IActionResult Update(string userId, string mpId)
+        {
+            MathProblem updatedMP = _mathProblemService.GetById(Convert.ToInt32(mpId));
+            List<string> answrs = updatedMP.Answers.Select(answ => answ.AnswerText).ToList();
+
+            if (answrs.Count < 3)
+                answrs.AddRange(new String(' ', 3 - answrs.Count).Split());
+
+            UpdateViewModel viewModel = new UpdateViewModel(
+                _topicService.GetTopicNames(), 
+                userId,
+                updatedMP.Name,
+                updatedMP.Topic.Name,
+                String.Join(",",_tagService.GetTagsByMathProblemId(updatedMP.Id)),
+                updatedMP.Summary,
+                answrs,
+                mpId
+            );
+            return View("Update", viewModel);
+        }
     }
 }

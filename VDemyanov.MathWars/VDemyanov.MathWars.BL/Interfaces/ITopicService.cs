@@ -11,5 +11,6 @@ namespace VDemyanov.MathWars.Service.Interfaces
     {
         List<string> GetTopicNames();
         Topic GetTopicByName(string name);
+        Topic GetTopicById(int id);
     }
 }

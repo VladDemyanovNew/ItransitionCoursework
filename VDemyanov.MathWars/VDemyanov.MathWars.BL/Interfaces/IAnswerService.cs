@@ -11,5 +11,6 @@ namespace VDemyanov.MathWars.Service.Interfaces
     {
         void Create(List<string> answers, MathProblem mathProblem);
         void Create(Answer answer);
+        List<Answer> GetByMathProblemId(int id);
     }
 }

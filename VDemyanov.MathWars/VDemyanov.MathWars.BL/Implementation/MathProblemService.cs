@@ -12,10 +12,14 @@ namespace VDemyanov.MathWars.Service.Implementation
     public class MathProblemService : IMathProblemService
     {
         private readonly IUnitOfWork _unitOfWork;
+        ITopicService _topicService;
+        IAnswerService _answerService;
 
-        public MathProblemService(IUnitOfWork unitOfWork)
+        public MathProblemService(IUnitOfWork unitOfWork, ITopicService topicService, IAnswerService answerService)
         {
             _unitOfWork = unitOfWork;
+            _topicService = topicService;
+            _answerService = answerService;
         }
 
         public void DeleteFromDb(int id)
@@ -28,6 +32,14 @@ namespace VDemyanov.MathWars.Service.Implementation
         {
             _unitOfWork.Repository<MathProblem>().Insert(mathProblem);
             _unitOfWork.Save();
+        }
+
+        public MathProblem GetById(int id)
+        {
+            MathProblem mp = _unitOfWork.Repository<MathProblem>().GetFirstOrDefault(mp => mp.Id == id);
+            mp.Topic = _topicService.GetTopicById(mp.TopicId);
+            mp.Answers = _answerService.GetByMathProblemId(id);
+            return mp;
         }
     }
 }

@@ -18,6 +18,11 @@ namespace VDemyanov.MathWars.Service.Implementation
             _unitOfWork = unitOfWork;
         }
 
+        public Topic GetTopicById(int id)
+        {
+            return _unitOfWork.Repository<Topic>().GetFirstOrDefault(topic => topic.Id == id);
+        }
+
         public Topic GetTopicByName(string name)
         {
             return _unitOfWork.Repository<Topic>().GetFirstOrDefault(topic => topic.Name == name);

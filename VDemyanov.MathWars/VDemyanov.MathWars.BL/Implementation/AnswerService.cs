@@ -31,5 +31,10 @@ namespace VDemyanov.MathWars.Service.Implementation
             _unitOfWork.Repository<Answer>().Insert(answer);
             _unitOfWork.Save();
         }
+
+        public List<Answer> GetByMathProblemId(int id)
+        {
+            return _unitOfWork.Repository<Answer>().Get(answ => answ.MathProblemId == id).ToList();
+        }
     }
 }
