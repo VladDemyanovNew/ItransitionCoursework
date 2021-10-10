@@ -22,7 +22,9 @@ namespace VDemyanov.MathWars.WEB.Controllers
         IDropboxService _dropboxService;
         IImageService _imageService;
         ITopicService _topicService;
-        ApplicationDbContext _applicationDbContext;
+        ITagService _tagService;
+        IMathProblemTagService _mathProblemTagService;
+        IAnswerService _answerService;
         UserManager<IdentityUser> _userManager;
         public IConfiguration Configuration { get; }
 
@@ -30,7 +32,9 @@ namespace VDemyanov.MathWars.WEB.Controllers
                                     IDropboxService dropboxService,
                                     IImageService imageService,
                                     ITopicService topicService,
-                                    ApplicationDbContext applicationDbContext,
+                                    ITagService tagService,
+                                    IAnswerService answerService,
+                                    IMathProblemTagService mathProblemTagService,
                                     UserManager<IdentityUser> userManager,
                                     IConfiguration configuration)
         {
@@ -38,18 +42,20 @@ namespace VDemyanov.MathWars.WEB.Controllers
             _imageService = imageService;
             _dropboxService = dropboxService;
             _topicService = topicService;
+            _tagService = tagService;
+            _mathProblemTagService = mathProblemTagService;
+            _answerService = answerService;
             _userManager = userManager;
             Configuration = configuration;
-            _applicationDbContext = applicationDbContext;
         }
 
         [HttpPost]
-        public IActionResult Delete(string[] values)
+        public IActionResult Delete(string[] values, string userId)
         {
             if (values.Length != 0)
                 foreach (string mpId in values)
                     _mathProblemService.DeleteFromDb(Convert.ToInt32(mpId));
-            return RedirectToAction("Index", "Profile");
+            return RedirectToAction("Index", "Profile", new { userId = userId });
         }
 
         [HttpGet]
@@ -62,6 +68,8 @@ namespace VDemyanov.MathWars.WEB.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(CreateViewModel model)
         {
+            _tagService.CreateTagsFromNames(_tagService.GetNamesFromStr(model.Tags));
+            List<Tag> tags = _tagService.GetTagsByNames(_tagService.GetNamesFromStr(model.Tags));
             Topic topic = _topicService.GetTopicByName(model.Topic);
 
             MathProblem createdMP = new MathProblem()
@@ -75,13 +83,9 @@ namespace VDemyanov.MathWars.WEB.Controllers
             };
 
             _mathProblemService.Create(createdMP);
-
-            foreach (IFormFile imageFile in Request.Form.Files)
-            {
-                string url = await _dropboxService.Upload("/public", imageFile.FileName, model.UserId, await imageFile.GetBytes());
-                Image image = new Image() { Link = url, MathProblem = createdMP };
-                //_imageService.Create(image);
-            }
+            _mathProblemTagService.Create(_mathProblemTagService.GenerateMPT(createdMP, tags));
+            await _imageService.Create(Request.Form.Files, createdMP, model.UserId);
+            _answerService.Create(model.Answers, createdMP);
 
             return Json(new { status = true, Message = "MathProblem is created" });
         }

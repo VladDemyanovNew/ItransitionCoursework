@@ -52,6 +52,9 @@ namespace VDemyanov.MathWars.WEB
             services.AddTransient<IDropboxService, DropboxService>();
             services.AddTransient<IImageService, ImageService>();
             services.AddTransient<ITopicService, TopicService>();
+            services.AddTransient<ITagService, TagService>();
+            services.AddTransient<IMathProblemTagService, MathProblemTagService>();
+            services.AddTransient<IAnswerService, AnswerService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

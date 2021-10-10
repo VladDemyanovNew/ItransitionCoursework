@@ -25,7 +25,7 @@ namespace VDemyanov.MathWars.WEB.Models
         public string Topic { get; set; }
         public string Tags { get; set; }
         public string Summary { get; set; }
-        public string Answers { get; set; }
+        public List<string> Answers { get; set; }
         public SelectList Topics { get; private set; }
     }
 }

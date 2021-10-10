@@ -20,7 +20,7 @@
     </div>
     <div class="row d-flex justify-content-between">
         <div>
-            <a asp-controller="MathProblem" asp-action="Create" asp-route-userId="@UserManager.GetUserId(User)" class="btn btn-primary">Create</a>
+            <a asp-controller="MathProblem" asp-action="Create" asp-route-userId="@Model.UserId" class="btn btn-primary">Create</a>
             <button type="button" class="btn btn-danger" id="deleteBtn" data-toggle="modal" data-target="#deleteModal" disabled>
                 Delete
             </button>
@@ -40,6 +40,7 @@
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
                             <form method="post" id="deleteform">
                                 <button type="submit" asp-controller="MathProblem" asp-action="Delete" class="btn btn-primary">Yes</button>
+                                <input type="hidden" value="@Model.UserId" name="userId">
                             </form>
                         </div>
                     </div>

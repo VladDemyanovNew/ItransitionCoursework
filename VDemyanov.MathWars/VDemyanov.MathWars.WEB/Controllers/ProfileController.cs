@@ -37,7 +37,8 @@ namespace VDemyanov.MathWars.WEB.Controllers
             ProfileViewModel viewModel = new ProfileViewModel
             {
                 MathProblems = mathProblems,
-                Achievements = null
+                Achievements = null,
+                UserId = userId
             };
 
             return View(viewModel);

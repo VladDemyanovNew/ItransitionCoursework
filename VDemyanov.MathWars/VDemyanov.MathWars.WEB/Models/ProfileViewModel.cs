@@ -8,6 +8,7 @@ namespace VDemyanov.MathWars.WEB.Models
 {
     public class ProfileViewModel
     {
+        public string UserId { get; set; }
         public List<MathProblem> MathProblems { get; set; }
         public List<Achievement> Achievements { get; set; }
     }

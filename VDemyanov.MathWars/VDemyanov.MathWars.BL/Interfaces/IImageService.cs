@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,5 +11,6 @@ namespace VDemyanov.MathWars.Service.Interfaces
     public interface IImageService
     {
         void Create(Image image);
+        Task Create(IFormFileCollection images, MathProblem mathProblem, string userId);
     }
 }
