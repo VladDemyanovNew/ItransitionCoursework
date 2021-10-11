@@ -41,5 +41,11 @@ namespace VDemyanov.MathWars.Service.Implementation
             mp.Answers = _answerService.GetByMathProblemId(id);
             return mp;
         }
+
+        public void Update(MathProblem mathProblem)
+        {
+            _unitOfWork.Repository<MathProblem>().Update(mathProblem);
+            _unitOfWork.Save();
+        }
     }
 }

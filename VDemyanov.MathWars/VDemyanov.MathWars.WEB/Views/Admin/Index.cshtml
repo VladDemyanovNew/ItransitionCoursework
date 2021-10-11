@@ -2,11 +2,36 @@
 @model AdminViewModel
 @inject UserManager<IdentityUser> UserManager
 
-<div class="text-center">
+<div class="text-center mb-4">
     <h1 class="display-4">Admin Page</h1>
 </div>
 
-@foreach (var mp in Model.Users)
-{
-    <a>@mp.UserName</a>
-}
+<div class="row box-shadow-table">
+    <table class="table table-responsive table-striped table-hover w-100 d-block d-md-table m-0">
+        <thead>
+            <tr>
+                <th scope="col">
+                    User ID
+                </th>
+                <th scope="col">
+                    User name
+                </th>
+                <th scope="col">
+                    Link
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model.Users)
+            {
+                <tr>
+                    <td>@user.Id</td>
+                    <td>@user.UserName</td>
+                    <td>
+                        <a asp-controller="Profile" asp-action="Index" asp-route-userId="@user.Id">User page</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

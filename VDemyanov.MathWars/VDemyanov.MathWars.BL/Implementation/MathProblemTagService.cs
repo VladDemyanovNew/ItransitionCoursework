@@ -30,6 +30,12 @@ namespace VDemyanov.MathWars.Service.Implementation
                 Create(mptag);
         }
 
+        public void DeleteAllByMathProblemId(int id)
+        {
+            _unitOfWork.Repository<MathProblemTag>().Delete(mpt => mpt.MathProblemId == id);
+            _unitOfWork.Save();
+        }
+
         public List<MathProblemTag> GenerateMPT(MathProblem mp, List<Tag> tags)
         {
             List<MathProblemTag> mathProblemTags = new List<MathProblemTag>();

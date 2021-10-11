@@ -21,6 +21,7 @@ namespace VDemyanov.MathWars.Service.Implementation
             _unitOfWork = unitOfWork;
             _dropboxService = dropboxService;
         }
+
         public void Create(Image image)
         {
             _unitOfWork.Repository<Image>().Insert(image);
@@ -34,6 +35,22 @@ namespace VDemyanov.MathWars.Service.Implementation
                 string url = await _dropboxService.Upload("/public", imageFile.FileName, userId, await imageFile.GetBytes());
                 Image image = new Image() { Link = url, MathProblem = mathProblem };
                 Create(image);
+            }
+        }
+
+        public void Delete(int id)
+        {
+            _unitOfWork.Repository<Image>().Delete(id);
+            _unitOfWork.Save();
+        }
+
+        public async Task DeleteAllByMathProblemId(int id)
+        {
+            List<Image> images = _unitOfWork.Repository<Image>().Get(img => img.MathProblemId == id).ToList();
+            foreach (var img in images)
+            {
+                await _dropboxService.Delete(img.Link);
+                Delete(img.Id);
             }
         }
     }

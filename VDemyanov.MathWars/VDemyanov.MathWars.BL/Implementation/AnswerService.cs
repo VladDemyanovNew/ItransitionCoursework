@@ -32,6 +32,18 @@ namespace VDemyanov.MathWars.Service.Implementation
             _unitOfWork.Save();
         }
 
+        public void Delete(int id)
+        {
+            _unitOfWork.Repository<Answer>().Delete(id);
+            _unitOfWork.Save();
+        }
+
+        public void DeleteAllByMathProblemId(int id)
+        {
+            _unitOfWork.Repository<Answer>().Delete(answ => answ.MathProblemId == id);
+            _unitOfWork.Save();
+        }
+
         public List<Answer> GetByMathProblemId(int id)
         {
             return _unitOfWork.Repository<Answer>().Get(answ => answ.MathProblemId == id).ToList();

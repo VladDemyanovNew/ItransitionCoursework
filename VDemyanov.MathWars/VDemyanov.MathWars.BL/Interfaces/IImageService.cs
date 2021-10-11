@@ -12,5 +12,7 @@ namespace VDemyanov.MathWars.Service.Interfaces
     {
         void Create(Image image);
         Task Create(IFormFileCollection images, MathProblem mathProblem, string userId);
+        Task DeleteAllByMathProblemId(int id);
+        void Delete(int id);
     }
 }

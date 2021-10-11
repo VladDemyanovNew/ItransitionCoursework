@@ -46,5 +46,14 @@ namespace VDemyanov.MathWars.Service.Implementation
             }
             return url;
         }
+
+        public async Task Delete(string url)
+        {
+            using (var dbx = new DropboxClient(AccessToken))
+            {
+                var md = await dbx.Sharing.GetSharedLinkMetadataAsync(url);
+                await dbx.Files.DeleteV2Async(md.PathLower);
+            }
+        }
     }
 }

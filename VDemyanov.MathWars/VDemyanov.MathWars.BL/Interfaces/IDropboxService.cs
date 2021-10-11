@@ -11,5 +11,6 @@ namespace VDemyanov.MathWars.Service.Interfaces
     public interface IDropboxService
     {
         Task<string> Upload(string folder, string file, string userId, byte[] content);
+        Task Delete(string url);
     }
 }

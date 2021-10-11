@@ -111,5 +111,39 @@ namespace VDemyanov.MathWars.WEB.Controllers
             );
             return View("Update", viewModel);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Update(UpdateViewModel model)
+        {
+            _tagService.CreateTagsFromNames(_tagService.GetNamesFromStr(model.Tags));
+            List<Tag> tags = _tagService.GetTagsByNames(_tagService.GetNamesFromStr(model.Tags));
+            Topic topic = _topicService.GetTopicByName(model.Topic);
+
+            MathProblem updatedMP = _mathProblemService.GetById(Convert.ToInt32(model.MathProblemId));
+            if (updatedMP != null)
+            {
+                updatedMP.Name = model.Title;
+                updatedMP.Summary = model.Summary;
+                updatedMP.LastEditDate = DateTime.Now;
+                updatedMP.Topic = topic;
+                updatedMP.TopicId = topic.Id;
+                _mathProblemService.Update(updatedMP);
+
+                _answerService.DeleteAllByMathProblemId(updatedMP.Id);
+                _answerService.Create(model.Answers, updatedMP);
+
+                _mathProblemTagService.DeleteAllByMathProblemId(updatedMP.Id);
+                _mathProblemTagService.Create(_mathProblemTagService.GenerateMPT(updatedMP, tags));
+
+                await _imageService.DeleteAllByMathProblemId(Convert.ToInt32(model.MathProblemId));
+                await _imageService.Create(Request.Form.Files, updatedMP, model.UserId);
+
+                return Json(new { status = true, Message = "MathProblem is updated" });
+            } 
+            else
+            {
+                return Json(new { status = false, Message = "MathProblem is not found " });
+            } 
+        }
     }
 }

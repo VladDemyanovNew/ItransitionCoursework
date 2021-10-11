@@ -44,6 +44,7 @@
         </div>
     </div>
     <input type="hidden" value="@Model.UserId" id="UserId" name="UserId" />
+    <input type="hidden" value="@Model.MathProblemId" id="MathProblemId" name="MathProblemId" />
 </form>
 
 <div class="mt-2">
@@ -112,6 +113,7 @@
                     let answers = [$("#answ1").val(), $("#answ2").val(), $("#answ3").val()];
                     console.log(answers);
                     formData.append("UserId", $("#UserId").val());
+                    formData.append("MathProblemId", $("#MathProblemId").val());
                     formData.append("Title", $("#Title").val());
                     formData.append("Tags", $("#Tags").val());
                     formData.append("Topic", $("#Topic").val());

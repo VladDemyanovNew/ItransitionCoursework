@@ -12,5 +12,6 @@ namespace VDemyanov.MathWars.Service.Interfaces
         void Create(MathProblemTag mptag);
         void Create(List<MathProblemTag> mptags);
         List<MathProblemTag> GenerateMPT(MathProblem mp, List<Tag> tags);
+        void DeleteAllByMathProblemId(int id);
     }
 }
