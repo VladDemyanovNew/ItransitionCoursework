@@ -55,6 +55,7 @@ namespace VDemyanov.MathWars.WEB
             services.AddTransient<ITagService, TagService>();
             services.AddTransient<IMathProblemTagService, MathProblemTagService>();
             services.AddTransient<IAnswerService, AnswerService>();
+            services.AddTransient<IAchievementsService, AchievementsService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

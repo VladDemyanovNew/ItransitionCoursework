@@ -1,8 +1,40 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@using Microsoft.AspNetCore.Identity
+@using VDemyanov.MathWars.Service.Interfaces;
+@model HomeViewModel
+@inject UserManager<IdentityUser> UserManager
+@inject IAchievementsService AchievementsService
+
+@{
+    string cardColor = "white";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">Welcome To MathWars</h1>
+    <h2><small class="text-muted">Let's train your brain!</small></h2>
 </div>
+
+<div class="container">
+    <div class="row justify-content-around">
+        @foreach (var mp in Model.MathProblems)
+        {
+            @if (AchievementsService.HasMathProblemBeenAchived(@UserManager.GetUserId(User), mp.Id))
+            {
+                cardColor = "#4BB543";
+            }
+            else
+            {
+                cardColor = "white";
+            }
+            <div class="card m-2" style="width: 18rem; background: @cardColor;">
+                <img src="@mp.Images.First().Link" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">@mp.Name</h5>
+                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                    <a asp-controller="MathProblem" asp-action="Show" asp-route-mpId="@mp.Id" class="btn btn-primary">Show</a>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+

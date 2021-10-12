@@ -10,6 +10,7 @@ using VDemyanov.MathWars.Dal;
 using VDemyanov.MathWars.DAL.Interfaces;
 using VDemyanov.MathWars.DAL.Models;
 using VDemyanov.MathWars.DAL.UnitOfWork;
+using VDemyanov.MathWars.Service.Interfaces;
 using VDemyanov.MathWars.WEB.Models;
 
 namespace VDemyanov.MathWars.WEB.Controllers
@@ -18,25 +19,27 @@ namespace VDemyanov.MathWars.WEB.Controllers
     {
         ApplicationDbContext _applicationDbContext;
         UserManager<IdentityUser> _userManager;
+        IMathProblemService _mathProblemService;
         IUnitOfWork _unitOfWork;
 
-        public ProfileController(ApplicationDbContext applicationDbContext, UserManager<IdentityUser> userManager, IUnitOfWork unitOfWork)
+        public ProfileController(
+            ApplicationDbContext applicationDbContext,
+            UserManager<IdentityUser> userManager,
+            IMathProblemService mathProblemService,
+            IUnitOfWork unitOfWork)
         {
             _applicationDbContext = applicationDbContext;
             _userManager = userManager;
             _unitOfWork = unitOfWork;
+            _mathProblemService = mathProblemService;
         }
 
         [Authorize]
         public ActionResult Index(string userId)
         {
-            List<MathProblem> mathProblems = _unitOfWork.Repository<MathProblem>()
-                                            .GetQuery((mp) => mp.UserId == userId)
-                                            .ToList();
-
             ProfileViewModel viewModel = new ProfileViewModel
             {
-                MathProblems = mathProblems,
+                MathProblems = _mathProblemService.GetAllByUserId(userId),
                 Achievements = null,
                 UserId = userId
             };

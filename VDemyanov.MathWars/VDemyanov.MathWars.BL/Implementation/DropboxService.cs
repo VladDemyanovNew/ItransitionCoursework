@@ -37,11 +37,17 @@ namespace VDemyanov.MathWars.Service.Implementation
                     var link = await dbx.Sharing.ListSharedLinksAsync(remotePath);
                     if (link.Links.Count == 0)
                     {
-                        var result = await dbx.Sharing.CreateSharedLinkWithSettingsAsync(remotePath);
-                        url = result.Url;
+                        
+                        await dbx.Sharing.CreateSharedLinkWithSettingsAsync(remotePath);
+                        var result = await dbx.Files.GetTemporaryLinkAsync(remotePath);
+                        url = result.Link;
                     }
                     else
-                        url = link.Links[0].Url;
+                    {
+                        var result = await dbx.Files.GetTemporaryLinkAsync(remotePath);
+                        url = result.Link;
+                    }
+                        
                 }
             }
             return url;

@@ -145,5 +145,17 @@ namespace VDemyanov.MathWars.WEB.Controllers
                 return Json(new { status = false, Message = "MathProblem is not found " });
             } 
         }
+
+        [HttpGet]
+        public IActionResult Show(string mpId)
+        {
+            MathProblem mp = _mathProblemService.GetById(Convert.ToInt32(mpId));
+            ShowViewModel viewModel = new ShowViewModel()
+            {
+                MathProblem = mp
+            };
+
+            return View("Show", viewModel);
+        }
     }
 }

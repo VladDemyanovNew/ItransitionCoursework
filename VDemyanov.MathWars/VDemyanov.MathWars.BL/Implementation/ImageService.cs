@@ -53,5 +53,10 @@ namespace VDemyanov.MathWars.Service.Implementation
                 Delete(img.Id);
             }
         }
+
+        public List<Image> GetAllByMathProblemId(int id)
+        {
+            return _unitOfWork.Repository<Image>().GetQuery(img => img.MathProblemId == id).ToList();
+        }
     }
 }

@@ -14,12 +14,14 @@ namespace VDemyanov.MathWars.Service.Implementation
         private readonly IUnitOfWork _unitOfWork;
         ITopicService _topicService;
         IAnswerService _answerService;
+        IImageService _imageService;
 
-        public MathProblemService(IUnitOfWork unitOfWork, ITopicService topicService, IAnswerService answerService)
+        public MathProblemService(IUnitOfWork unitOfWork, ITopicService topicService, IAnswerService answerService, IImageService imageService)
         {
             _unitOfWork = unitOfWork;
             _topicService = topicService;
             _answerService = answerService;
+            _imageService = imageService;
         }
 
         public void DeleteFromDb(int id)
@@ -39,6 +41,7 @@ namespace VDemyanov.MathWars.Service.Implementation
             MathProblem mp = _unitOfWork.Repository<MathProblem>().GetFirstOrDefault(mp => mp.Id == id);
             mp.Topic = _topicService.GetTopicById(mp.TopicId);
             mp.Answers = _answerService.GetByMathProblemId(id);
+            mp.Images = _imageService.GetAllByMathProblemId(mp.Id);
             return mp;
         }
 
@@ -46,6 +49,21 @@ namespace VDemyanov.MathWars.Service.Implementation
         {
             _unitOfWork.Repository<MathProblem>().Update(mathProblem);
             _unitOfWork.Save();
+        }
+
+        public List<MathProblem> GetAllByUserId(string id)
+        {
+            return _unitOfWork.Repository<MathProblem>().GetQuery(mp => mp.UserId == id).ToList();
+        }
+
+        public List<MathProblem> GetAll()
+        {
+            List<MathProblem> mathProblems = _unitOfWork.Repository<MathProblem>().GetAll().ToList();
+            foreach (var mp in mathProblems)
+            {
+                mp.Images = _imageService.GetAllByMathProblemId(mp.Id);
+            }
+            return mathProblems;
         }
     }
 }

@@ -12,6 +12,8 @@ namespace VDemyanov.MathWars.Service.Interfaces
         void DeleteFromDb(int id);
         void Create(MathProblem mathProblem);
         MathProblem GetById(int id);
+        List<MathProblem> GetAllByUserId(string id);
         void Update(MathProblem mathProblem);
+        List<MathProblem> GetAll();
     }
 }
