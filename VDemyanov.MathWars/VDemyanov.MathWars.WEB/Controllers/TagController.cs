@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using VDemyanov.MathWars.DAL.Models;
 using VDemyanov.MathWars.Service.Interfaces;
 
 namespace VDemyanov.MathWars.WEB.Controllers
@@ -26,7 +27,7 @@ namespace VDemyanov.MathWars.WEB.Controllers
         [HttpGet]
         public JsonResult GetTagNames()
         {
-            List<string> tags = _tagService.GetAll().Select(tag => tag.Name).ToList();
+            List<Tag> tags = _tagService.GetAll().Select(tag => tag.Name).Select(name => new Tag() { Name = name } ).ToList();
             return Json(tags);
         }
     }

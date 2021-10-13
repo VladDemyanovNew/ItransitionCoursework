@@ -49,7 +49,7 @@ namespace VDemyanov.MathWars.Service.Implementation
             List<Image> images = _unitOfWork.Repository<Image>().Get(img => img.MathProblemId == id).ToList();
             foreach (var img in images)
             {
-                await _dropboxService.Delete(img.Link);
+                //await _dropboxService.Delete(img.Link);
                 Delete(img.Id);
             }
         }

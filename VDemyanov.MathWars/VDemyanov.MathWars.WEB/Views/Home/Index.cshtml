@@ -8,12 +8,18 @@
     string cardColor = "white";
 }
 
+<link rel="stylesheet" href="~/lib/jqcloud/prettytag.css">
+
 <div class="text-center">
     <h1 class="display-4">Welcome To MathWars</h1>
     <h2><small class="text-muted">Let's train your brain!</small></h2>
 </div>
 
+<ul class="cloud-tags" id="tagsCloud">
+</ul>
+
 <div class="container">
+
     <div class="row justify-content-around">
         @foreach (var mp in Model.MathProblems)
         {
@@ -36,5 +42,21 @@
         }
     </div>
 </div>
+
+@section Scripts{
+    <script src="~/lib/jqcloud/jquery.prettytag.js"></script>
+    <script type="text/javascript">
+
+        fetch("/Tag/GetTagNames")
+            .then(response => response.json())
+            .then(tags => {
+                tagsCloud.innerHTML = tags.map(tag => {
+                    return `<li> <a href="#tag_link"> ${tag.name} </a> </li>`;
+                }).join("");
+                $(".cloud-tags").prettyTag();
+                
+            });
+    </script>
+}
 
 

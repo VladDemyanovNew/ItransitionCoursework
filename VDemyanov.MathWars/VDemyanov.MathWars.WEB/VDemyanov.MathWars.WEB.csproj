@@ -40,4 +40,8 @@
     <ProjectReference Include="..\VDemyanov.MathWars.DAL\VDemyanov.MathWars.DAL.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Properties\PublishProfiles\" />
+  </ItemGroup>
+
 </Project>

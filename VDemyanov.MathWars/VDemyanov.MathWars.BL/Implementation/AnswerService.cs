@@ -17,6 +17,13 @@ namespace VDemyanov.MathWars.Service.Implementation
         {
             _unitOfWork = unitOfWork;
         }
+
+        public bool CheckAnswer(string answer, int mpId)
+        {
+            List<Answer> answers = GetByMathProblemId(mpId);
+            return answers.Any(answ => answ.AnswerText == answer);
+        }
+
         public void Create(List<string> answers, MathProblem mathProblem)
         {
             foreach (string answ in answers)

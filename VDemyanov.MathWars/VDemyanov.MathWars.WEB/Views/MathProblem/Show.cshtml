@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Identity
+@using Markdig;
 @using VDemyanov.MathWars.Service.Interfaces;
 @inject SignInManager<IdentityUser> SignInManager
 @model ShowViewModel
@@ -8,7 +9,7 @@
 <div class="container">
     <div class="row">
 
-        <div class="card">
+        <div class="card w-100">
             <div id="carouselExampleIndicators" class="carousel slide card-img-top" data-ride="carousel">
                 <ol class="carousel-indicators">
                     <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
@@ -47,12 +48,21 @@
             </div>
             <div class="card-body">
                 <h5 class="card-title">@Model.MathProblem.Name</h5>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                <p class="card-text">
+                    @Html.Raw(Markdown.ToHtml(Model.MathProblem.Summary))
+                </p>
 
-                @if (SignInManager.IsSignedIn(User) && !AchievementsService.HasMathProblemBeenAchived(@UserManager.GetUserId(User), Model.MathProblem.Id))
-                {
-                    <a href="#" class="btn btn-primary">Send answer</a>
-                }
+                <form>
+                    @if (SignInManager.IsSignedIn(User) && !AchievementsService.HasMathProblemBeenAchived(@UserManager.GetUserId(User), Model.MathProblem.Id))
+                    {
+                        <div class="form-group">
+                            <label for="answ">Input your answer</label>
+                            <input type="text" class="form-control" id="answ" name="answ">
+                            <input type="hidden" id="mpId" value="@Model.MathProblem.Id" name="mpId" />
+                        </div>
+                        <button type="button" onclick="SendAnswer()" class="btn btn-primary">Send answer</button>
+                    }
+                </form>
 
                 @if (AchievementsService.HasMathProblemBeenAchived(@UserManager.GetUserId(User), Model.MathProblem.Id))
                 {
@@ -64,5 +74,101 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="solvedModal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Congratulations!</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-success" role="alert">
+                    Problem is solved:)
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="window.location.href = window.location.href;" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="wrongModal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Wrong answer!</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-warning" role="alert">
+                    You gave the wrong answer :(
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="errorModal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Error!</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger" role="alert">
+                    Something went wrong...
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script type="text/javascript">
+        function SendAnswer() {
+
+            fetch("/MathProblem/Answer", {
+                method: "POST",
+                headers: {
+                    "Accept": "application/json",
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    mathProblemId: parseInt(mpId.value),
+                    answerText: answ.value
+                })
+            }).then(resp => {
+                if (resp.ok) {
+                    return resp.json();
+                } else {
+                    $("#errorModal").modal({ backdrop: 'static', keyboard: false });
+                    console.log("Error HTTP: " + resp.status);
+                }
+            }).then(data => {
+                if (data.status) {
+                    $("#solvedModal").modal({ backdrop: 'static', keyboard: false });
+                } else {
+                    $("#wrongModal").modal({ backdrop: 'static', keyboard: false });
+                }
+                console.log(data)
+            });
+        }
+    </script>
+}
 
 

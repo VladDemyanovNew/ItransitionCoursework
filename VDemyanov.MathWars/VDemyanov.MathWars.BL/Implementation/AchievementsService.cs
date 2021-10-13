@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,6 +17,12 @@ namespace VDemyanov.MathWars.Service.Implementation
         public AchievementsService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
+        }
+
+        public void Create(MathProblem mp, IdentityUser user)
+        {
+            _unitOfWork.Repository<Achievement>().Insert(new Achievement() { MathProblem = mp, User = user });
+            _unitOfWork.Save();
         }
 
         public bool HasMathProblemBeenAchived(string userId, int mpId)

@@ -14,5 +14,6 @@ namespace VDemyanov.MathWars.Service.Interfaces
         void Delete(int id);
         List<Answer> GetByMathProblemId(int id);
         void DeleteAllByMathProblemId(int id);
+        bool CheckAnswer(string answer, int mpId);
     }
 }

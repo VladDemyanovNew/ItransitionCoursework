@@ -25,6 +25,7 @@ namespace VDemyanov.MathWars.WEB.Controllers
         ITagService _tagService;
         IMathProblemTagService _mathProblemTagService;
         IAnswerService _answerService;
+        IAchievementsService _achievementsService;
         UserManager<IdentityUser> _userManager;
         public IConfiguration Configuration { get; }
 
@@ -34,6 +35,7 @@ namespace VDemyanov.MathWars.WEB.Controllers
                                     ITopicService topicService,
                                     ITagService tagService,
                                     IAnswerService answerService,
+                                    IAchievementsService achievementsService,
                                     IMathProblemTagService mathProblemTagService,
                                     UserManager<IdentityUser> userManager,
                                     IConfiguration configuration)
@@ -45,6 +47,7 @@ namespace VDemyanov.MathWars.WEB.Controllers
             _tagService = tagService;
             _mathProblemTagService = mathProblemTagService;
             _answerService = answerService;
+            _achievementsService = achievementsService;
             _userManager = userManager;
             Configuration = configuration;
         }
@@ -54,7 +57,10 @@ namespace VDemyanov.MathWars.WEB.Controllers
         {
             if (values.Length != 0)
                 foreach (string mpId in values)
+                {
+                    //_imageService.DeleteAllByMathProblemId(Convert.ToInt32(mpId));
                     _mathProblemService.DeleteFromDb(Convert.ToInt32(mpId));
+                }
             return RedirectToAction("Index", "Profile", new { userId = userId });
         }
 
@@ -156,6 +162,23 @@ namespace VDemyanov.MathWars.WEB.Controllers
             };
 
             return View("Show", viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Answer([FromBody]Answer answer)
+        {
+            if (_answerService.CheckAnswer(answer.AnswerText, answer.MathProblemId))
+            {
+                _achievementsService.Create(
+                    _mathProblemService.GetById(answer.MathProblemId),
+                    await _userManager.FindByIdAsync(_userManager.GetUserId(User))
+                    );
+                return Json(new { status = true, Message = $"Answer is recieved: {answer.MathProblemId} and {answer.AnswerText}" });
+            }
+            else
+            {
+                return Json(new { status = false, Message = $"Answer is recieved: {answer.MathProblemId} and {answer.AnswerText}" });
+            }
         }
     }
 }

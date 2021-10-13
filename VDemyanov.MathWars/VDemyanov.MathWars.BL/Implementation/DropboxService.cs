@@ -1,5 +1,6 @@
 ﻿using Dropbox.Api;
 using Dropbox.Api.Files;
+using Dropbox.Api.Sharing;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -32,20 +33,36 @@ namespace VDemyanov.MathWars.Service.Implementation
             {
                 using (var mem = new MemoryStream(content))
                 {
-                    await dbx.Files.UploadAsync(remotePath, WriteMode.Overwrite.Instance, body: mem);
-                   
-                    var link = await dbx.Sharing.ListSharedLinksAsync(remotePath);
+                    ListSharedLinksResult link = null;
+
+                    try
+                    {
+                        link = await dbx.Sharing.ListSharedLinksAsync(remotePath);
+                    }
+                    catch
+                    {
+                        await dbx.Files.UploadAsync(remotePath, WriteMode.Overwrite.Instance, body: mem);
+                        link = await dbx.Sharing.ListSharedLinksAsync(remotePath);
+                    }
+                    
                     if (link.Links.Count == 0)
                     {
-                        
-                        await dbx.Sharing.CreateSharedLinkWithSettingsAsync(remotePath);
-                        var result = await dbx.Files.GetTemporaryLinkAsync(remotePath);
-                        url = result.Link;
+                        var res = await dbx.Sharing.CreateSharedLinkWithSettingsAsync(remotePath);
+                        url = res.Url.Split("?")[0];
+                        url += "?raw=1";
+
+                        //var result = await dbx.Files.GetTemporaryLinkAsync(remotePath);
+                        //url = result.Link;
                     }
                     else
                     {
-                        var result = await dbx.Files.GetTemporaryLinkAsync(remotePath);
-                        url = result.Link;
+                        //var res = await dbx.Sharing.GetSharedLinkFileAsync(null, remotePath);
+                        
+                        url = link.Links[0].Url.Split("?")[0];
+                        url += "?raw=1";
+
+                        //var result = await dbx.Files.GetTemporaryLinkAsync(remotePath);
+                        //url = result.Link;
                     }
                         
                 }
