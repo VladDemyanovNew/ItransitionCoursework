@@ -50,12 +50,25 @@
         fetch("/Tag/GetTagNames")
             .then(response => response.json())
             .then(tags => {
-                tagsCloud.innerHTML = tags.map(tag => {
-                    return `<li> <a href="#tag_link"> ${tag.name} </a> </li>`;
+                let el = "<li> <a style=\"cursor: pointer; color: white; \" onclick=\"filterMP('')\"> all </a> </li>";
+                tags = tags.map(tag => {
+                    return `<li> <a style="cursor: pointer; color: white;" onclick="filterMP('${tag.name}')"> ${tag.name} </a> </li>`;
                 }).join("");
+                tagsCloud.innerHTML = el + tags;
                 $(".cloud-tags").prettyTag();
-                
+
             });
+
+        function filterMP(tag) {
+            fetch(`/Home/Index?tag=${tag}`, { method: 'GET' })
+                .then(resp => {
+                    console.log(resp.url);
+                    window.location.href = resp.url;
+                })
+                .catch(err => {
+                    console.log(err + " url: " + url);
+                });
+        }
     </script>
 }
 

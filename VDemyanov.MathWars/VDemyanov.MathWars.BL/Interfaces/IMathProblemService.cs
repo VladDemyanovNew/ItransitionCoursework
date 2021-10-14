@@ -15,5 +15,6 @@ namespace VDemyanov.MathWars.Service.Interfaces
         List<MathProblem> GetAllByUserId(string id);
         void Update(MathProblem mathProblem);
         List<MathProblem> GetAll();
+        List<MathProblem> GetAllByTagName(string tag);
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VDemyanov.MathWars.Dal;
 using VDemyanov.MathWars.DAL.Interfaces;
 using VDemyanov.MathWars.DAL.Models;
 using VDemyanov.MathWars.Service.Interfaces;
@@ -15,13 +16,16 @@ namespace VDemyanov.MathWars.Service.Implementation
         ITopicService _topicService;
         IAnswerService _answerService;
         IImageService _imageService;
+        ApplicationDbContext _applicationDbContext;
 
-        public MathProblemService(IUnitOfWork unitOfWork, ITopicService topicService, IAnswerService answerService, IImageService imageService)
+        public MathProblemService(IUnitOfWork unitOfWork, ITopicService topicService,
+            IAnswerService answerService, IImageService imageService, ApplicationDbContext applicationDbContext)
         {
             _unitOfWork = unitOfWork;
             _topicService = topicService;
             _answerService = answerService;
             _imageService = imageService;
+            _applicationDbContext = applicationDbContext;
         }
 
         public void DeleteFromDb(int id)
@@ -63,6 +67,18 @@ namespace VDemyanov.MathWars.Service.Implementation
             {
                 mp.Images = _imageService.GetAllByMathProblemId(mp.Id);
             }
+            return mathProblems;
+        }
+
+        public List<MathProblem> GetAllByTagName(string tag)
+        {
+            List<MathProblem> mathProblems = (from mp in _applicationDbContext.MathProblems
+                                              join mpt in _applicationDbContext.MathProblemTags on mp.Id equals mpt.MathProblemId
+                                              join t in _applicationDbContext.Tags on mpt.TagId equals t.Id
+                                              where t.Name == tag
+                                              select mp).ToList();
+            foreach (var mp in mathProblems)
+                mp.Images = _imageService.GetAllByMathProblemId(mp.Id);
             return mathProblems;
         }
     }
