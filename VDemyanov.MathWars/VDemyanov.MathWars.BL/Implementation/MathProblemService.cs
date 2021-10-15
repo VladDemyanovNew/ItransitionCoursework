@@ -81,5 +81,10 @@ namespace VDemyanov.MathWars.Service.Implementation
                 mp.Images = _imageService.GetAllByMathProblemId(mp.Id);
             return mathProblems;
         }
+
+        public int CountMPCreatedByUser(string id)
+        {
+            return _unitOfWork.Repository<MathProblem>().GetQuery(mp => mp.UserId == id).Count();
+        }
     }
 }

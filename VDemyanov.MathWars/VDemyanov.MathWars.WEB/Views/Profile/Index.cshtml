@@ -96,7 +96,11 @@
 </div>
 
 <script>
-    createUserStatChart(null);
+    fetch(`/Achievements/Stat?userId=${"@Model.UserId"}`)
+        .then(response => response.json())
+        .then(stat => {
+            createUserStatChart(stat);
+        });
 
     function SelectAll() {
         Array.from(document.querySelectorAll("input[type='checkbox']"))

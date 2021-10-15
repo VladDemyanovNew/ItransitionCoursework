@@ -19,6 +19,11 @@ namespace VDemyanov.MathWars.Service.Implementation
             _unitOfWork = unitOfWork;
         }
 
+        public int CountMPSolvedByUser(string id)
+        {
+            return _unitOfWork.Repository<Achievement>().GetQuery(ach => ach.UserId == id).Count();
+        }
+
         public void Create(MathProblem mp, IdentityUser user)
         {
             _unitOfWork.Repository<Achievement>().Insert(new Achievement() { MathProblem = mp, User = user });

@@ -22,6 +22,11 @@
       "provider": "filesystem",
       "library": "D:\\libs\\jqcloud",
       "destination": "wwwroot/lib/jqcloud/"
+    },
+    {
+      "provider": "filesystem",
+      "library": "D:\\libs\\Tag-Input-With-Autocomplete-jQuery-Tagator",
+      "destination": "wwwroot/lib/Tag-Input-With-Autocomplete-jQuery-Tagator/"
     }
   ]
 }

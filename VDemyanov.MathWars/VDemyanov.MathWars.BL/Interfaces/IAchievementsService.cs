@@ -12,5 +12,6 @@ namespace VDemyanov.MathWars.Service.Interfaces
     {
         bool HasMathProblemBeenAchived(string userId, int mpId);
         void Create(MathProblem mp, IdentityUser user);
+        int CountMPSolvedByUser(string id);
     }
 }

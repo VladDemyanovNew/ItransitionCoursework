@@ -16,5 +16,6 @@ namespace VDemyanov.MathWars.Service.Interfaces
         void Update(MathProblem mathProblem);
         List<MathProblem> GetAll();
         List<MathProblem> GetAllByTagName(string tag);
+        int CountMPCreatedByUser(string id);
     }
 }
