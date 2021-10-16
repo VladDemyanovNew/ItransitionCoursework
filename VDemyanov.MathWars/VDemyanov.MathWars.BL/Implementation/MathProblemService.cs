@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,18 +16,30 @@ namespace VDemyanov.MathWars.Service.Implementation
     {
         private readonly IUnitOfWork _unitOfWork;
         ITopicService _topicService;
+        ITagService _tagService;
+        IMathProblemTagService _mathProblemTagService;
+        IAchievementsService _achievementsService;
+        UserManager<IdentityUser> _userManager;
         IAnswerService _answerService;
         IImageService _imageService;
         ApplicationDbContext _applicationDbContext;
 
         public MathProblemService(IUnitOfWork unitOfWork, ITopicService topicService,
-            IAnswerService answerService, IImageService imageService, ApplicationDbContext applicationDbContext)
+                                  IAnswerService answerService, IImageService imageService,
+                                  ApplicationDbContext applicationDbContext, ITagService tagService,
+                                  IMathProblemTagService mathProblemTagService,
+                                  IAchievementsService achievementsService,
+                                  UserManager<IdentityUser> userManager)
         {
             _unitOfWork = unitOfWork;
             _topicService = topicService;
             _answerService = answerService;
             _imageService = imageService;
             _applicationDbContext = applicationDbContext;
+            _tagService = tagService;
+            _mathProblemTagService = mathProblemTagService;
+            _achievementsService = achievementsService;
+            _userManager = userManager;
         }
 
         public void DeleteFromDb(int id)
@@ -85,6 +99,95 @@ namespace VDemyanov.MathWars.Service.Implementation
         public int CountMPCreatedByUser(string id)
         {
             return _unitOfWork.Repository<MathProblem>().GetQuery(mp => mp.UserId == id).Count();
+        }
+
+        public List<MathProblem> TestFullTextSearch(string text)
+        {
+
+            throw new NotImplementedException();
+        }
+
+        public async Task<bool> Create(string tagsStr, string topicName, string title, string userId, string summary, IFormFileCollection images, List<string> answers)
+        {
+
+            using (var transaction = _applicationDbContext.Database.BeginTransaction())
+            {
+                try
+                {
+                    _tagService.CreateTagsFromNames(_tagService.GetNamesFromStr(tagsStr));
+                    List<Tag> tags = _tagService.GetTagsByNames(_tagService.GetNamesFromStr(tagsStr));
+                    Topic topic = _topicService.GetTopicByName(topicName);
+
+                    MathProblem createdMP = new MathProblem()
+                    {
+                        Name = title,
+                        Summary = summary,
+                        CreationDate = DateTime.Now,
+                        LastEditDate = DateTime.Now,
+                        User = await _userManager.FindByIdAsync(userId),
+                        Topic = topic
+                    };
+
+                    Create(createdMP);
+                    _mathProblemTagService.Create(_mathProblemTagService.GenerateMPT(createdMP, tags));
+                    await _imageService.Create(images, createdMP, userId);
+                    _answerService.Create(answers, createdMP);
+
+                    transaction.Commit();
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    return false;
+                }
+            }
+        }
+
+        public async Task<bool> Update(string tagsStr, string topicName, string title, string userId, string summary, int mpId, IFormFileCollection images, List<string> answers)
+        {
+            using (var transaction = _applicationDbContext.Database.BeginTransaction())
+            {
+                try
+                {
+                    MathProblem updatedMP = GetById(mpId);
+                    if (updatedMP != null)
+                    {
+                        _tagService.CreateTagsFromNames(_tagService.GetNamesFromStr(tagsStr));
+                        List<Tag> tags = _tagService.GetTagsByNames(_tagService.GetNamesFromStr(tagsStr));
+                        Topic topic = _topicService.GetTopicByName(topicName);
+
+                        updatedMP.Name = title;
+                        updatedMP.Summary = summary;
+                        updatedMP.LastEditDate = DateTime.Now;
+                        updatedMP.Topic = topic;
+                        updatedMP.TopicId = topic.Id;
+                        Update(updatedMP);
+
+                        _answerService.DeleteAllByMathProblemId(updatedMP.Id);
+                        _answerService.Create(answers, updatedMP);
+
+                        _mathProblemTagService.DeleteAllByMathProblemId(updatedMP.Id);
+                        _mathProblemTagService.Create(_mathProblemTagService.GenerateMPT(updatedMP, tags));
+
+                        await _imageService.DeleteAllByMathProblemId(mpId);
+                        await _imageService.Create(images, updatedMP, userId);
+                    } 
+                    else
+                    {
+                        transaction.Rollback();
+                        return false;
+                    }
+
+                    transaction.Commit();
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    return false;
+                }
+            }
         }
     }
 }

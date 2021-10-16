@@ -9,7 +9,7 @@
             data: [stat.solved, stat.created],
             backgroundColor: [
                 '#2ecc71',
-                '#f1c40f'
+                '#3498db'
             ],
             hoverOffset: 4
         }]

@@ -12,10 +12,13 @@
 
 <form action="/" class="row" enctype="multipart/form-data" method="POST">
     <legend class="pl-3">Creating new math problem</legend>
+    <div id="errors" class="alert alert-danger col-md-12" style="display:none;">
+        <div></div>
+    </div>
     <div class="col-md-6">
         <div class="mb-3">
             <label class="control-label" for="title">Title</label>
-            <input type="text" class="form-control" value="@Model.Title" name="Title" id="Title" placeholder="Some Title">
+            <input type="text" class="form-control" value="@Model.Title" name="Title" id="Title" placeholder="Some Title" required>
         </div>
         <div class="mb-3">
             <label class="control-label" for="Topic">Topic</label>
@@ -23,7 +26,7 @@
         </div>
         <div class="mb-3">
             <label class="control-label" for="Tags">Tags</label>
-            <input id="Tags" name="Tags" class="form-control" value="tag1, tag2, tag3">
+            <input id="Tags" name="Tags" class="form-control" value="tag1, tag2, tag3" required>
         </div>
         <div class="mb-3 input-group">
             <span class="input-group-text">Answers</span>
@@ -33,13 +36,13 @@
         </div>
         <div class="mb-3">
             <label for="Summary" class="form-label">Summary</label>
-            <textarea class="form-control" id="Summary" name="Summary" placeholder="Enter a summary using markdown" rows="3"></textarea>
+            <textarea class="form-control" id="Summary" name="Summary" placeholder="Enter a summary using markdown" rows="3" required></textarea>
         </div>
     </div>
     <div class="col-md-6">
         <div class="dropzone custom-border w-100 h-100 d-flex justify-content-center align-items-center flex-wrap" id="my-dropzone" name="mainFileUploader">
             <div class="fallback">
-                <input name="file" type="file" multiple />
+                <input name="file" type="file" multiple required />
             </div>
         </div>
     </div>
@@ -50,13 +53,11 @@
     <button type="submit" class="btn btn-primary" id="submit-all">Create</button>
 </div>
 
-
-
 <div class="modal fade" id="staticBackdrop" tabindex="-1" role="dialog" data-bs-backdrop="static" aria-labelledby="deleteModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button onclick="window.location.href = window.location.href;" type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -78,11 +79,21 @@
         fetch("/Tag/GetTagNames")
             .then(response => response.json())
             .then(json => {
-                console.log(json);
                 $('#Tags').tagator({
                     autocomplete: json.map(tag => tag.name)
                 });
             });
+
+        function addError(errors) {
+            const div = document.createElement("div");
+            errors.forEach(error => {
+                const p = document.createElement("p");
+                p.append(error);
+                div.append(p);
+                
+            });
+            document.querySelector("#errors > div").replaceWith(div);
+        }
 
         Dropzone.options.myDropzone = {
             url: "/mathproblem/create",
@@ -111,7 +122,6 @@
 
                 this.on('sendingmultiple', function (data, xhr, formData) {
                     let answers = [$("#answ1").val(), $("#answ2").val(), $("#answ3").val()];
-                    console.log(answers);
                     formData.append("UserId", $("#UserId").val());
                     formData.append("Title", $("#Title").val());
                     formData.append("Tags", $("#Tags").val());
@@ -121,8 +131,21 @@
                         formData.append(`Answers[${i}]`, answers[i]);
                 });
             },
-            success: function (response) {
-                $("#staticBackdrop").modal({ backdrop: 'static', keyboard: false });
+            success: function (file, response) {
+                if (response.status)
+                    $("#staticBackdrop").modal({ backdrop: 'static', keyboard: false });
+                else {
+                    var wrapperThis = this;
+                    wrapperThis.removeFile(file);
+                    addError([response.message]);
+                    document.getElementById("errors").style.display = "block";
+                }  
+            },
+            error: function (file, response) {
+                var wrapperThis = this;
+                wrapperThis.removeFile(file);
+                addError(Object.values(response));
+                document.getElementById("errors").style.display = "block";
             }
         };
     </script>

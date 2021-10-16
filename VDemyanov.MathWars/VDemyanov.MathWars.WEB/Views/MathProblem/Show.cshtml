@@ -55,11 +55,14 @@
                 <form>
                     @if (SignInManager.IsSignedIn(User) && !AchievementsService.HasMathProblemBeenAchived(@UserManager.GetUserId(User), Model.MathProblem.Id))
                     {
-                        <div class="form-group">
-                            <label for="answ">Input your answer</label>
-                            <input type="text" class="form-control" id="answ" name="answ">
-                            <input type="hidden" id="mpId" value="@Model.MathProblem.Id" name="mpId" />
+                    <div class="form-group">
+                        <label for="answ">Input your answer</label>
+                        <input type="text" class="form-control" id="answ" name="answ" required>
+                        <div class="valid-feedback">
+                            Looks good!
                         </div>
+                        <input type="hidden" id="mpId" value="@Model.MathProblem.Id" name="mpId" />
+                    </div>
                         <button type="button" onclick="SendAnswer()" class="btn btn-primary">Send answer</button>
                     }
                 </form>
@@ -142,31 +145,41 @@
     <script type="text/javascript">
         function SendAnswer() {
 
-            fetch("/MathProblem/Answer", {
-                method: "POST",
-                headers: {
-                    "Accept": "application/json",
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    mathProblemId: parseInt(mpId.value),
-                    answerText: answ.value
-                })
-            }).then(resp => {
-                if (resp.ok) {
-                    return resp.json();
-                } else {
-                    $("#errorModal").modal({ backdrop: 'static', keyboard: false });
-                    console.log("Error HTTP: " + resp.status);
-                }
-            }).then(data => {
-                if (data.status) {
-                    $("#solvedModal").modal({ backdrop: 'static', keyboard: false });
-                } else {
-                    $("#wrongModal").modal({ backdrop: 'static', keyboard: false });
-                }
-                console.log(data)
-            });
+            const mathProblemId = parseInt(document.getElementById("mpId").value);
+            const answer = document.getElementById("answ").value
+            if (!answer.trim()) {
+                answ.classList.remove('is-valid')
+                answ.classList.add('is-invalid');
+            } else {
+                answ.classList.remove('is-invalid');
+                answ.classList.add('is-valid');
+
+                fetch("/MathProblem/Answer", {
+                    method: "POST",
+                    headers: {
+                        "Accept": "application/json",
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        mathProblemId: mathProblemId,
+                        answerText: answer
+                    })
+                }).then(resp => {
+                    if (resp.ok) {
+                        return resp.json();
+                    } else {
+                        $("#errorModal").modal({ backdrop: 'static', keyboard: false });
+                        console.log("Error HTTP: " + resp.status);
+                    }
+                }).then(data => {
+                    if (data.status) {
+                        $("#solvedModal").modal({ backdrop: 'static', keyboard: false });
+                    } else {
+                        $("#wrongModal").modal({ backdrop: 'static', keyboard: false });
+                    }
+                    console.log(data)
+                });
+            }
         }
     </script>
 }

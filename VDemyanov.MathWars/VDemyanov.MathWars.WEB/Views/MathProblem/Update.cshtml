@@ -12,6 +12,9 @@
 
 <form action="/" class="row" enctype="multipart/form-data" method="POST">
     <legend class="pl-3">Updating math problem (Id = <b>@Model.MathProblemId</b>)</legend>
+    <div id="errors" class="alert alert-danger col-md-12" style="display:none;">
+        <div></div>
+    </div>
     <div class="col-md-6">
         <div class="mb-3">
             <label class="control-label" for="title">Title</label>
@@ -80,9 +83,20 @@
             .then(response => response.json())
             .then(json => {
                 $('#Tags').tagator({
-                    autocomplete: json
+                    autocomplete: json.map(tag => tag.name)
                 });
             });
+
+        function addError(errors) {
+            const div = document.createElement("div");
+            errors.forEach(error => {
+                const p = document.createElement("p");
+                p.append(error);
+                div.append(p);
+
+            });
+            document.querySelector("#errors > div").replaceWith(div);
+        }
 
         Dropzone.options.myDropzone = {
             url: "/mathproblem/update",
@@ -111,7 +125,6 @@
 
                 this.on('sendingmultiple', function (data, xhr, formData) {
                     let answers = [$("#answ1").val(), $("#answ2").val(), $("#answ3").val()];
-                    console.log(answers);
                     formData.append("UserId", $("#UserId").val());
                     formData.append("MathProblemId", $("#MathProblemId").val());
                     formData.append("Title", $("#Title").val());
@@ -123,7 +136,20 @@
                 });
             },
             success: function (response) {
-                $("#staticBackdrop").modal({ backdrop: 'static', keyboard: false });
+                if (response.status)
+                    $("#staticBackdrop").modal({ backdrop: 'static', keyboard: false });
+                else {
+                    var wrapperThis = this;
+                    wrapperThis.removeFile(file);
+                    addError([response.message]);
+                    document.getElementById("errors").style.display = "block";
+                }  
+            },
+            error: function (file, response) {
+                var wrapperThis = this;
+                wrapperThis.removeFile(file);
+                addError(Object.values(response));
+                document.getElementById("errors").style.display = "block";
             }
         };
     </script>

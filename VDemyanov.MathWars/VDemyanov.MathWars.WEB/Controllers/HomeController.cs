@@ -38,7 +38,7 @@ namespace VDemyanov.MathWars.WEB.Controllers
             return View(viewModel);
         }
 
-        public IActionResult Privacy()
+        public IActionResult About()
         {
             return View();
         }

@@ -74,26 +74,20 @@ namespace VDemyanov.MathWars.WEB.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(CreateViewModel model)
         {
-            _tagService.CreateTagsFromNames(_tagService.GetNamesFromStr(model.Tags));
-            List<Tag> tags = _tagService.GetTagsByNames(_tagService.GetNamesFromStr(model.Tags));
-            Topic topic = _topicService.GetTopicByName(model.Topic);
+            if (model.Answers.All(answ => string.IsNullOrWhiteSpace(answ)))
+                ModelState.AddModelError("Answers", "Enter at least one answer");
 
-            MathProblem createdMP = new MathProblem()
-            {
-                Name = model.Title,
-                Summary = model.Summary,
-                CreationDate = DateTime.Now,
-                LastEditDate = DateTime.Now,
-                User = await _userManager.FindByIdAsync(model.UserId),
-                Topic = topic
-            };
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-            _mathProblemService.Create(createdMP);
-            _mathProblemTagService.Create(_mathProblemTagService.GenerateMPT(createdMP, tags));
-            await _imageService.Create(Request.Form.Files, createdMP, model.UserId);
-            _answerService.Create(model.Answers, createdMP);
+            bool isMpCreated = await _mathProblemService.Create(model.Tags, model.Topic, model.Title,
+                                             model.UserId, model.Summary,
+                                             Request.Form.Files, model.Answers);
 
-            return Json(new { status = true, Message = "MathProblem is created" });
+            if (isMpCreated)
+                return Json(new { status = true, Message = "MathProblem is created" });
+            else
+                return Json(new { status = false, Message = "MathProblem is not created" });
         }
 
         [HttpGet]
@@ -121,35 +115,20 @@ namespace VDemyanov.MathWars.WEB.Controllers
         [HttpPost]
         public async Task<IActionResult> Update(UpdateViewModel model)
         {
-            _tagService.CreateTagsFromNames(_tagService.GetNamesFromStr(model.Tags));
-            List<Tag> tags = _tagService.GetTagsByNames(_tagService.GetNamesFromStr(model.Tags));
-            Topic topic = _topicService.GetTopicByName(model.Topic);
+            if (model.Answers.All(answ => string.IsNullOrWhiteSpace(answ)))
+                ModelState.AddModelError("Answers", "Enter at least one answer");
 
-            MathProblem updatedMP = _mathProblemService.GetById(Convert.ToInt32(model.MathProblemId));
-            if (updatedMP != null)
-            {
-                updatedMP.Name = model.Title;
-                updatedMP.Summary = model.Summary;
-                updatedMP.LastEditDate = DateTime.Now;
-                updatedMP.Topic = topic;
-                updatedMP.TopicId = topic.Id;
-                _mathProblemService.Update(updatedMP);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-                _answerService.DeleteAllByMathProblemId(updatedMP.Id);
-                _answerService.Create(model.Answers, updatedMP);
+            bool isMpUpdated = await _mathProblemService.Update(model.Tags, model.Topic, model.Title,
+                                             model.UserId, model.Summary, Convert.ToInt32(model.MathProblemId),
+                                             Request.Form.Files, model.Answers);
 
-                _mathProblemTagService.DeleteAllByMathProblemId(updatedMP.Id);
-                _mathProblemTagService.Create(_mathProblemTagService.GenerateMPT(updatedMP, tags));
-
-                await _imageService.DeleteAllByMathProblemId(Convert.ToInt32(model.MathProblemId));
-                await _imageService.Create(Request.Form.Files, updatedMP, model.UserId);
-
+            if (isMpUpdated)
                 return Json(new { status = true, Message = "MathProblem is updated" });
-            } 
             else
-            {
                 return Json(new { status = false, Message = "MathProblem is not found " });
-            } 
         }
 
         [HttpGet]
