@@ -19,6 +19,7 @@ namespace VDemyanov.MathWars.Service.Interfaces
         Task<bool> Update(string tagsStr, string topicName, string title, string userId, string summary, int mpId, IFormFileCollection images, List<string> answers);
         List<MathProblem> GetAll();
         List<MathProblem> GetAllByTagName(string tag);
+        List<MathProblem> GetAllByTopicName(string topicName);
         int CountMPCreatedByUser(string id);
         List<MathProblem> TestFullTextSearch(string text);
     }

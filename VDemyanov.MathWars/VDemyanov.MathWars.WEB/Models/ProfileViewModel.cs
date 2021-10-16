@@ -11,5 +11,7 @@ namespace VDemyanov.MathWars.WEB.Models
         public string UserId { get; set; }
         public List<MathProblem> MathProblems { get; set; }
         public List<Achievement> Achievements { get; set; }
+        public FilterViewModel FilterViewModel { get; set; }
+        public SortViewModel SortViewModel { get; set; }
     }
 }

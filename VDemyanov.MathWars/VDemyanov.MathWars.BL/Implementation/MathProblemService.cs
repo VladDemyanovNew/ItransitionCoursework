@@ -71,7 +71,10 @@ namespace VDemyanov.MathWars.Service.Implementation
 
         public List<MathProblem> GetAllByUserId(string id)
         {
-            return _unitOfWork.Repository<MathProblem>().GetQuery(mp => mp.UserId == id).ToList();
+            List<MathProblem> mathProblems = _unitOfWork.Repository<MathProblem>().GetQuery(mp => mp.UserId == id).ToList();
+            foreach (var mp in mathProblems)
+                mp.Topic = _topicService.GetTopicById(mp.TopicId);
+            return mathProblems;
         }
 
         public List<MathProblem> GetAll()
@@ -103,7 +106,6 @@ namespace VDemyanov.MathWars.Service.Implementation
 
         public List<MathProblem> TestFullTextSearch(string text)
         {
-
             throw new NotImplementedException();
         }
 
@@ -188,6 +190,17 @@ namespace VDemyanov.MathWars.Service.Implementation
                     return false;
                 }
             }
+        }
+
+        public List<MathProblem> GetAllByTopicName(string topicName)
+        {
+            List<MathProblem> mathProblems = (from mp in _applicationDbContext.MathProblems
+                                              join topic in _applicationDbContext.Topics on mp.TopicId equals topic.Id
+                                              where topic.Name == topicName
+                                              select mp).ToList();
+            foreach (var mp in mathProblems)
+                mp.Topic = _topicService.GetTopicById(mp.TopicId);
+            return mathProblems;
         }
     }
 }

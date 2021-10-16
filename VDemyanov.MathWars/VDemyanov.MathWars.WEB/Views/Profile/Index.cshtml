@@ -46,12 +46,11 @@
         </div>
 
     </div>
-    <form>
+    <form method="get">
         <div class="form-inline form-group">
-            <label class="control-label mr-1">Sorting 1: </label>
-            <select class="form-control mr-3"></select>
-            <label class="control-label mr-1">Sorting 2: </label>
-            <select class="form-control mr-4"></select>
+            <label class="control-label mr-2" for="topic">Topic: </label>
+            <select name="topic" asp-items="Model.FilterViewModel.Topics" id="topic" class="form-control mr-4"></select>
+            <input type="hidden" value="@Model.UserId" name="userId">
             <input type="submit" value="Filter" class="btn btn-outline-dark" aria-hidden="true" />
         </div>
     </form>
@@ -65,16 +64,34 @@
                     <input type="checkbox" id="maincheckbox" onclick="SelectAll()">
                 </th>
                 <th scope="col">
-                    <a asp-action="Index" class="">Id</a>
+                    <a asp-action="Index"
+                       asp-route-sortOrder="@(Model.SortViewModel.IdSort)"
+                       asp-route-topic="@(Model.FilterViewModel.SelectedTopic)"
+                       asp-route-userId="@Model.UserId">Id</a>
                 </th>
                 <th scope="col">
-                    <a asp-action="Index">Name</a>
+                    <a asp-action="Index"
+                       asp-route-sortOrder="@(Model.SortViewModel.NameSort)"
+                       asp-route-topic="@(Model.FilterViewModel.SelectedTopic)"
+                       asp-route-userId="@Model.UserId">Name</a>
                 </th>
                 <th scope="col">
-                    <a asp-action="Index">Creation date</a>
+                    <a asp-action="Index"
+                       asp-route-sortOrder="@(Model.SortViewModel.CreationDateSort)"
+                       asp-route-topic="@(Model.FilterViewModel.SelectedTopic)"
+                       asp-route-userId="@Model.UserId">Creation date</a>
                 </th>
                 <th scope="col">
-                    <a asp-action="Index">Last edit date</a>
+                    <a asp-action="Index"
+                       asp-route-sortOrder="@(Model.SortViewModel.LastEditDateSort)"
+                       asp-route-topic="@(Model.FilterViewModel.SelectedTopic)"
+                       asp-route-userId="@Model.UserId">Last edit date</a>
+                </th>
+                <th scope="col">
+                    <a asp-action="Index"
+                       asp-route-sortOrder="@(Model.SortViewModel.TopicSort)"
+                       asp-route-topic="@(Model.FilterViewModel.SelectedTopic)"
+                       asp-route-userId="@Model.UserId">Topic</a>
                 </th>
                 <th scope="col"></th>
             </tr>
@@ -82,17 +99,18 @@
         <tbody>
             @foreach (var mp in Model.MathProblems)
             {
-                <tr>
-                    <td><input type="checkbox" onclick="DisableDelBTN()" id="@mp.Id" value="@mp.Id" form="deleteform" name="values"></td>
-                    <td>@mp.Id</td>
-                    <td>@mp.Name</td>
-                    <td>@mp.CreationDate</td>
-                    <td>@mp.LastEditDate</td>
-                    <td class="text-right">
-                        <a asp-controller="MathProblem" asp-action="Update" asp-route-userId="@Model.UserId" asp-route-mpId="@mp.Id" class="text-decoration-none mr-4"><i class="fas fa-edit mr-1"></i>edit</a>
-                        <a asp-controller="MathProblem" asp-action="Show" asp-route-mpId="@mp.Id" class="text-decoration-none"><i class="fas fa-eye mr-1"></i>show</a>
-                    </td>
-                </tr>
+            <tr>
+                <td><input type="checkbox" onclick="DisableDelBTN()" id="@mp.Id" value="@mp.Id" form="deleteform" name="values"></td>
+                <td>@mp.Id</td>
+                <td>@mp.Name</td>
+                <td>@mp.CreationDate</td>
+                <td>@mp.LastEditDate</td>
+                <td>@mp.Topic.Name</td>
+                <td class="text-right">
+                    <a asp-controller="MathProblem" asp-action="Update" asp-route-userId="@Model.UserId" asp-route-mpId="@mp.Id" class="text-decoration-none mr-4"><i class="fas fa-edit mr-1"></i>edit</a>
+                    <a asp-controller="MathProblem" asp-action="Show" asp-route-mpId="@mp.Id" class="text-decoration-none"><i class="fas fa-eye mr-1"></i>show</a>
+                </td>
+            </tr>
             }
         </tbody>
     </table>
