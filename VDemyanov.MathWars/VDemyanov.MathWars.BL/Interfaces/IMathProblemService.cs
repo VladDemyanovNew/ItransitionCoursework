@@ -14,12 +14,12 @@ namespace VDemyanov.MathWars.Service.Interfaces
         void Create(MathProblem mathProblem);
         Task<bool> Create(string tagsStr, string topicName, string title, string userId, string summary, IFormFileCollection images, List<string> answers);
         MathProblem GetById(int id);
-        List<MathProblem> GetAllByUserId(string id);
+        Task<List<MathProblem>> GetAllByUserId(string id);
         void Update(MathProblem mathProblem);
         Task<bool> Update(string tagsStr, string topicName, string title, string userId, string summary, int mpId, IFormFileCollection images, List<string> answers);
-        List<MathProblem> GetAll();
-        List<MathProblem> GetAllByTagName(string tag);
-        List<MathProblem> GetAllByTopicName(string topicName);
+        Task<List<MathProblem>> GetAll();
+        Task<List<MathProblem>> GetAllByTagName(string tag);
+        Task<List<MathProblem>> GetAllByTopicName(string topicName);
         int CountMPCreatedByUser(string id);
         Task<List<MathProblem>> FullTextSearch(string text);
     }

@@ -31,14 +31,20 @@
             {
                 cardColor = "white";
             }
-            <div class="card m-2" style="width: 18rem; background: @cardColor;">
-                <img src="@mp.Images.First().Link" class="card-img-top" alt="...">
-                <div class="card-body">
-                    <h5 class="card-title">@mp.Name</h5>
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                    <a asp-controller="MathProblem" asp-action="Show" asp-route-mpId="@mp.Id" class="btn btn-primary">Show</a>
-                </div>
+        <div class="card m-2" style="width: 18rem; background: @cardColor;">
+            <img src="@mp.Images.First().Link" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">@mp.Name</h5>
+                <p>
+                    <div><b>Topic</b>: @mp.Topic.Name</div>
+                    <div><b>Author</b>: @mp.User.UserName</div>
+                </p>
+                <a asp-controller="MathProblem" asp-action="Show" asp-route-mpId="@mp.Id" class="btn btn-primary">Show</a>
             </div>
+            <div class="card-footer text-muted">
+                <small class="text-muted"><b>Last updated</b> @mp.LastEditDate</small>
+            </div>
+        </div>
         }
     </div>
 </div>

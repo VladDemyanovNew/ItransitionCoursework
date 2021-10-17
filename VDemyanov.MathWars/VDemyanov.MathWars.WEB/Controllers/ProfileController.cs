@@ -38,10 +38,11 @@ namespace VDemyanov.MathWars.WEB.Controllers
         }
 
         [Authorize]
-        public ActionResult Index(string userId, string topic, SortState sortOrder = SortState.IdAsc)
+        public async Task<ActionResult> Index(string userId, string topic, SortState sortOrder = SortState.IdAsc)
         {
-            List<MathProblem> mathProblems = _mathProblemService.GetAllByUserId(userId);
-            FilterViewModel filterViewModel = Filter(ref mathProblems, topic);
+            List<MathProblem> mathProblems = await _mathProblemService.GetAllByUserId(userId);
+            FilterViewModel filterViewModel;
+            (filterViewModel, mathProblems) = await Filter(mathProblems, topic);
             SortViewModel sortViewModel = Sort(ref mathProblems, sortOrder);
 
             ProfileViewModel viewModel = new ProfileViewModel
@@ -74,14 +75,14 @@ namespace VDemyanov.MathWars.WEB.Controllers
             return new SortViewModel(sortOrder);
         }
 
-        private FilterViewModel Filter(ref List<MathProblem> mathProblems, string topic)
+        private async Task<(FilterViewModel, List<MathProblem>)> Filter(List<MathProblem> mathProblems, string topic)
         {
             if (!String.IsNullOrEmpty(topic) && topic != "All")
-                mathProblems = _mathProblemService.GetAllByTopicName(topic);
+                mathProblems = await _mathProblemService.GetAllByTopicName(topic);
 
             List<string> topics = _topicService.GetTopicNames();
 
-            return new FilterViewModel(topics, topic);
+            return (new FilterViewModel(topics, topic), mathProblems);
         }
 
     }

@@ -45,6 +45,14 @@ namespace VDemyanov.MathWars.WEB
             {
                 facebookOptions.AppId = Configuration["Authentication:Facebook:AppId"];
                 facebookOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
+            }).AddGoogle(googleOptions =>
+            {
+                googleOptions.ClientId = Configuration["Authentication:Google:AppId"];
+                googleOptions.ClientSecret = Configuration["Authentication:Google:AppSecret"];
+            }).AddMicrosoftAccount(microsoftOptions =>
+            {
+                microsoftOptions.ClientId = Configuration["Authentication:Microsoft:AppId"];
+                microsoftOptions.ClientSecret = Configuration["Authentication:Microsoft:AppSecret"];
             });
 
             services.AddTransient<IUnitOfWork, UnitOfWork>();

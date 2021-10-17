@@ -155,7 +155,7 @@ namespace VDemyanov.MathWars.WEB.Controllers
             if (!string.IsNullOrEmpty(searchText))
                 mathProblems = await _mathProblemService.FullTextSearch(searchText);
             else
-                mathProblems = _mathProblemService.GetAll();
+                mathProblems = await _mathProblemService.GetAll();
 
             SearchViewModel viewModel = new SearchViewModel()
             {
@@ -164,5 +164,6 @@ namespace VDemyanov.MathWars.WEB.Controllers
 
             return View("Search", viewModel);
         }
+
     }
 }

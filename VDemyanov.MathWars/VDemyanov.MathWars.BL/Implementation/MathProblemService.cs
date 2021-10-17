@@ -71,34 +71,28 @@ namespace VDemyanov.MathWars.Service.Implementation
             _unitOfWork.Save();
         }
 
-        public List<MathProblem> GetAllByUserId(string id)
+        public async Task<List<MathProblem>> GetAllByUserId(string id)
         {
             List<MathProblem> mathProblems = _unitOfWork.Repository<MathProblem>().GetQuery(mp => mp.UserId == id).ToList();
-            foreach (var mp in mathProblems)
-                mp.Topic = _topicService.GetTopicById(mp.TopicId);
-            return mathProblems;
+            return await ConfigMP(mathProblems);
         }
 
-        public List<MathProblem> GetAll()
+        public async Task<List<MathProblem>> GetAll()
         {
             List<MathProblem> mathProblems = _unitOfWork.Repository<MathProblem>().GetAll().ToList();
-            foreach (var mp in mathProblems)
-            {
-                mp.Images = _imageService.GetAllByMathProblemId(mp.Id);
-            }
-            return mathProblems;
+
+            return await ConfigMP(mathProblems);
         }
 
-        public List<MathProblem> GetAllByTagName(string tag)
+        public async Task<List<MathProblem>> GetAllByTagName(string tag)
         {
             List<MathProblem> mathProblems = (from mp in _applicationDbContext.MathProblems
                                               join mpt in _applicationDbContext.MathProblemTags on mp.Id equals mpt.MathProblemId
                                               join t in _applicationDbContext.Tags on mpt.TagId equals t.Id
                                               where t.Name == tag
                                               select mp).ToList();
-            foreach (var mp in mathProblems)
-                mp.Images = _imageService.GetAllByMathProblemId(mp.Id);
-            return mathProblems;
+                
+            return await ConfigMP(mathProblems);
         }
 
         public int CountMPCreatedByUser(string id)
@@ -124,14 +118,7 @@ namespace VDemyanov.MathWars.Service.Implementation
                                                   LastEditDate = item.LastEditDate, Id = item.Id, TopicId = item.TopicId, UserId = item.UserId
                                               }).GroupBy(item => item.Id).Select(item => item.First()).ToList();
 
-
-            foreach (var mp in mathProblems)
-            {
-                mp.Topic = _topicService.GetTopicById(mp.TopicId);
-                mp.User = await _userManager.FindByIdAsync(mp.UserId);
-            }
-                
-            return mathProblems;
+            return await ConfigMP(mathProblems);
         }
 
         public async Task<bool> Create(string tagsStr, string topicName, string title, string userId, string summary, IFormFileCollection images, List<string> answers)
@@ -217,14 +204,24 @@ namespace VDemyanov.MathWars.Service.Implementation
             }
         }
 
-        public List<MathProblem> GetAllByTopicName(string topicName)
+        public async Task<List<MathProblem>> GetAllByTopicName(string topicName)
         {
             List<MathProblem> mathProblems = (from mp in _applicationDbContext.MathProblems
                                               join topic in _applicationDbContext.Topics on mp.TopicId equals topic.Id
                                               where topic.Name == topicName
                                               select mp).ToList();
+            
+            return await ConfigMP(mathProblems);
+        }
+
+        private async Task<List<MathProblem>> ConfigMP(List<MathProblem> mathProblems)
+        {
             foreach (var mp in mathProblems)
+            {
                 mp.Topic = _topicService.GetTopicById(mp.TopicId);
+                mp.User = await _userManager.FindByIdAsync(mp.UserId);
+                mp.Images = _imageService.GetAllByMathProblemId(mp.Id);
+            }
             return mathProblems;
         }
     }
