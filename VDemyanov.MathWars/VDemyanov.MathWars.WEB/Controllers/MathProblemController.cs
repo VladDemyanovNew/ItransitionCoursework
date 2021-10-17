@@ -19,33 +19,21 @@ namespace VDemyanov.MathWars.WEB.Controllers
     public class MathProblemController : Controller
     {
         IMathProblemService _mathProblemService;
-        IDropboxService _dropboxService;
-        IImageService _imageService;
         ITopicService _topicService;
         ITagService _tagService;
-        IMathProblemTagService _mathProblemTagService;
         IAnswerService _answerService;
         IAchievementsService _achievementsService;
         UserManager<IdentityUser> _userManager;
         public IConfiguration Configuration { get; }
 
-        public MathProblemController(IMathProblemService mathProblemService,
-                                    IDropboxService dropboxService,
-                                    IImageService imageService,
-                                    ITopicService topicService,
-                                    ITagService tagService,
-                                    IAnswerService answerService,
-                                    IAchievementsService achievementsService,
-                                    IMathProblemTagService mathProblemTagService,
-                                    UserManager<IdentityUser> userManager,
+        public MathProblemController(IMathProblemService mathProblemService, ITopicService topicService,
+                                    ITagService tagService, IAnswerService answerService,
+                                    IAchievementsService achievementsService, UserManager<IdentityUser> userManager,
                                     IConfiguration configuration)
         {
             _mathProblemService = mathProblemService;
-            _imageService = imageService;
-            _dropboxService = dropboxService;
             _topicService = topicService;
             _tagService = tagService;
-            _mathProblemTagService = mathProblemTagService;
             _answerService = answerService;
             _achievementsService = achievementsService;
             _userManager = userManager;
@@ -158,6 +146,23 @@ namespace VDemyanov.MathWars.WEB.Controllers
             {
                 return Json(new { status = false, Message = $"Answer is recieved: {answer.MathProblemId} and {answer.AnswerText}" });
             }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Search(string searchText)
+        {
+            List<MathProblem> mathProblems;
+            if (!string.IsNullOrEmpty(searchText))
+                mathProblems = await _mathProblemService.FullTextSearch(searchText);
+            else
+                mathProblems = _mathProblemService.GetAll();
+
+            SearchViewModel viewModel = new SearchViewModel()
+            {
+                MathProblems = mathProblems
+            };
+
+            return View("Search", viewModel);
         }
     }
 }

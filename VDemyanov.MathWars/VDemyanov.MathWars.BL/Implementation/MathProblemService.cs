@@ -9,6 +9,8 @@ using VDemyanov.MathWars.Dal;
 using VDemyanov.MathWars.DAL.Interfaces;
 using VDemyanov.MathWars.DAL.Models;
 using VDemyanov.MathWars.Service.Interfaces;
+using Korzh.EasyQuery.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace VDemyanov.MathWars.Service.Implementation
 {
@@ -104,9 +106,32 @@ namespace VDemyanov.MathWars.Service.Implementation
             return _unitOfWork.Repository<MathProblem>().GetQuery(mp => mp.UserId == id).Count();
         }
 
-        public List<MathProblem> TestFullTextSearch(string text)
+        public async Task<List<MathProblem>> FullTextSearch(string text)
         {
-            throw new NotImplementedException();
+
+            List<MathProblem> mathProblems = (from mp in _applicationDbContext.MathProblems
+                                              join mpt in _applicationDbContext.MathProblemTags on mp.Id equals mpt.MathProblemId
+                                              join tag in _applicationDbContext.Tags on mpt.TagId equals tag.Id
+                                              join topic in _applicationDbContext.Topics on mp.TopicId equals topic.Id
+                                              select new
+                                              {
+                                                  Name = mp.Name, Summary = mp.Summary, CreationDate = mp.CreationDate,
+                                                  LastEditDate = mp.LastEditDate, Id = mp.Id, TopicName = topic.Name,
+                                                  TagName = tag.Name, TopicId = mp.TopicId, UserId = mp.UserId
+                                              }).FullTextSearchQuery(text).ToList().Select(item => new MathProblem()
+                                              {
+                                                  Name = item.Name, Summary = item.Summary, CreationDate = item.CreationDate,
+                                                  LastEditDate = item.LastEditDate, Id = item.Id, TopicId = item.TopicId, UserId = item.UserId
+                                              }).GroupBy(item => item.Id).Select(item => item.First()).ToList();
+
+
+            foreach (var mp in mathProblems)
+            {
+                mp.Topic = _topicService.GetTopicById(mp.TopicId);
+                mp.User = await _userManager.FindByIdAsync(mp.UserId);
+            }
+                
+            return mathProblems;
         }
 
         public async Task<bool> Create(string tagsStr, string topicName, string title, string userId, string summary, IFormFileCollection images, List<string> answers)

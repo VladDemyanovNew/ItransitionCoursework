@@ -1,0 +1,15 @@
+﻿@model SearchViewModel
+
+<div class="list-group">
+    @foreach (var mp in Model.MathProblems)
+    {
+    <a asp-controller="MathProblem" asp-action="Show" asp-route-mpId="@mp.Id" class="list-group-item list-group-item-action">
+        <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-1">@mp.Name</h5>
+            <small>@mp.LastEditDate</small>
+        </div>
+        <p class="mb-1"><b>Topic</b>: @mp.Topic.Name</p>
+        <small><b>Author</b>: @mp.User.UserName</small>
+    </a>
+    }
+</div>    

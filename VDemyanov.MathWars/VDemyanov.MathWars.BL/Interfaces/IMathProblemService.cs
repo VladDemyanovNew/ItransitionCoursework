@@ -21,6 +21,6 @@ namespace VDemyanov.MathWars.Service.Interfaces
         List<MathProblem> GetAllByTagName(string tag);
         List<MathProblem> GetAllByTopicName(string topicName);
         int CountMPCreatedByUser(string id);
-        List<MathProblem> TestFullTextSearch(string text);
+        Task<List<MathProblem>> FullTextSearch(string text);
     }
 }

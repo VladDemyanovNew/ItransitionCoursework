@@ -3,6 +3,16 @@
 @inject UserManager<IdentityUser> UserManager
 
 <ul class="navbar-nav">
+    <li class="d-flex align-items-center">
+        <form class="input-group input-group-sm" method="post" asp-controller="MathProblem" asp-action="Search">
+            <input type="text" class="form-control" placeholder="Search math problem" aria-label="Search math problem" aria-describedby="button-addon2" name="searchText">
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="submit" id="button-addon2">
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                </button>
+            </div>
+        </form>
+    </li>
     @if (SignInManager.IsSignedIn(User))
     {
         <li class="nav-item">
